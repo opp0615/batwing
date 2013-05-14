@@ -1,0 +1,6 @@
+output dir 
+	C:\cocos2d-x\$(Configuration).win32\
+adding using dir
+	.;..\Classes;C:\cocos2d-x\cocos2dx;C:\cocos2d-x\cocos2dx\include;C:\cocos2d-x\cocos2dx\kazmath\include;C:\cocos2d-x\cocos2dx\platform\win32;C:\cocos2d-x\cocos2dx\platform\third_party\win32;C:\cocos2d-x\cocos2dx\platform\third_party\win32\OGLES;C:\cocos2d-x\CocosDenshion\include;%(AdditionalIncludeDirectories)
+adding library dir
+	C:\cocos2d-x\$(Configuration).win32\
