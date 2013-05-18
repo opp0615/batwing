@@ -43,7 +43,16 @@
     <ClInclude Include="..\Classes\AppDelegate.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
+    <ClInclude Include="..\Classes\GameScene.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="itemManager.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -54,7 +63,16 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
+    <ClCompile Include="..\Classes\GameScene.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="itemManager.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
