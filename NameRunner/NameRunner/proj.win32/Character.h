@@ -31,5 +31,6 @@ public:
 	void getGameSpeed(int game_speed);
 	void setJump(float jump_v);
 	void setClick(int g_click);
+	CCSprite* getChar();
 	int getClick();
 };

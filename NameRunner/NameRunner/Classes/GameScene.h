@@ -20,6 +20,7 @@ private:
 	int g_click;
 	CCSprite* m_character;
 	std::list<CCSprite*> g_itemlist;
+	std::list<CCSprite*>::iterator g_item_iterator;
 
 public:
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
@@ -36,7 +37,11 @@ public:
 
 	void update(float dt);
 
+	void createItem();
+
 	void collisionCheck();
+
+	void itemScrolling();
     // implement the "static node()" method manually
     CREATE_FUNC(GameScene);
 };

@@ -3,7 +3,7 @@
 Character::Character(CCSprite* g_character)
 {
 	m_character = g_character;
-	gravity = 0.2f;
+	gravity = 0.3f;
 	v=0;
 	a= gravity;
 	m_click = 0;
@@ -13,7 +13,7 @@ Character::Character(CCSprite* g_character)
 void Character::Accel()
 {
 	char_P = m_character->getPosition();
-	if(char_P.y <=300 && v<3)
+	if(char_P.y <=180 && v<6)
 	{
 		v=0;
 		m_click = 0;
@@ -50,4 +50,10 @@ int Character::getClick()
 {
 
 	return m_click;
+}
+
+CCSprite* Character::getChar()
+{
+	return m_character;
+
 }

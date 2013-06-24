@@ -24,7 +24,14 @@ void Map::Scrolling()
 		m_map1 = m_map2;
 		m_map2 = temp;
 		
-		m_map2->setPositionX(1280);
+		m_map2->setPositionX(1270);
 	}
+
+}
+
+CCSprite* Map::getMap(int n)
+{
+	if(n==1)	return m_map1;
+	else return m_map2;
 
 }

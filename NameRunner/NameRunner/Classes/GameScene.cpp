@@ -35,67 +35,24 @@ bool GameScene::init()
 		}
 
 		g_click = 0;
-		m_character = CCSprite::create("char.png");
+		m_character = CCSprite::create("duck.png");
 		this -> addChild(m_character,1);
 
 		m_character->setAnchorPoint(ccp(0,0));
-		m_character->setPosition(ccp(100,300));
+		m_character->setPosition(ccp(100,180));
 
-		CCSprite* map1 = CCSprite::create("background1.png");
+		CCSprite* map1 = CCSprite::create("back1.png");
 		this->addChild(map1,0);
 
 		map1->setAnchorPoint(ccp(0,0));
 		map1->setPosition(ccp(0,0));
 		
-		CCSprite* map2 = CCSprite::create("background2.png");
+		CCSprite* map2 = CCSprite::create("back2.png");
 		this->addChild(map2,0);
 
-		CCSprite* mob[5];
-		g_itemManager = new itemManager();
-
-
-
-		mob[0] = CCSprite::create("mob.png");
-		this->addChild(mob[0],1);
-		mob[0]->setAnchorPoint(ccp(0,0));
-		mob[0]->setPosition(ccp(600,400));
-		
-		
-		mob[1] = CCSprite::create("mob.png");
-		this->addChild(mob[1],1);
-		mob[1]->setAnchorPoint(ccp(0,0));
-		mob[1]->setPosition(ccp(700,400));
-		
-
-		mob[2] = CCSprite::create("mob.png");
-		this->addChild(mob[2],1);
-		mob[2]->setAnchorPoint(ccp(0,0));
-		mob[2]->setPosition(ccp(800,400));
-		
-
-		mob[3] = CCSprite::create("mob.png");
-		this->addChild(mob[3],1);
-		mob[3]->setAnchorPoint(ccp(0,0));
-		mob[3]->setPosition(ccp(900,400));
-		
-
-		mob[4] = CCSprite::create("mob.png");
-		this->addChild(mob[4],1);
-		mob[4]->setAnchorPoint(ccp(0,0));
-		mob[4]->setPosition(ccp(1000,400));
-		
-		
 		map2->setAnchorPoint(ccp(0,0));
 		map2->setPosition(ccp(1280,0));
 
-		
-		g_itemlist.push_back(mob[0]);
-		g_itemlist.push_back(mob[1]);
-		g_itemlist.push_back(mob[2]);
-		g_itemlist.push_back(mob[3]);
-		g_itemlist.push_back(mob[4]);
-
-		
 		g_char = new Character(m_character);
 		g_map = new Map(map1,map2);
 
@@ -112,22 +69,54 @@ void GameScene::update(float dt)
 {
 	g_map->Scrolling();
 	g_char->Accel();
-
+	createItem();
+	itemScrolling();
+	collisionCheck();
 }
 
 void GameScene::collisionCheck()
 {
 	CCPoint char_P=m_character->getPosition();
-	
-	for(;;)
-	{
-		
-		if(1)
-		{
-			
-		}
+	int n;
+	CCSprite* char_temp;
+	CCSprite* temp;
+	CCPoint char_p;
+	CCPoint item_P;
+	char_temp = g_char->getChar();
+	char_P = char_temp->getPosition();
+	n = (int)g_itemlist.size();
 
+	for(g_item_iterator = g_itemlist.begin(); g_item_iterator != g_itemlist.end(); g_item_iterator++)
+	{
+
+		temp = *(g_item_iterator);
+		item_P=temp->getPosition();
+
+		
+			if(item_P.x <= char_P.x+100 &&item_P.x>=char_P.x && item_P.y >=char_P.y &&item_P.y<=char_P.y+100)
+			{
+				this->removeChild((*g_item_iterator));
+				g_item_iterator=g_itemlist.erase(g_item_iterator);
+			
+			}
+			
 	}
+		
+	
+}
+
+void GameScene::itemScrolling()
+{
+	int n;
+	CCPoint item_P;
+	CCSprite* temp;
+	for(g_item_iterator = g_itemlist.begin(); g_item_iterator != g_itemlist.end(); g_item_iterator++)
+	{
+		temp = (*g_item_iterator);
+		item_P=temp->getPosition();
+		temp->setPosition(ccp(item_P.x-3,item_P.y));
+	}
+
 }
 
 void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
@@ -137,7 +126,7 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 	location = CCDirector::sharedDirector()->convertToGL(location);
 	
 	g_char->setClick(g_char->getClick());
-	g_char->setJump(6);
+	g_char->setJump(8);
 }
 
 
@@ -147,3 +136,48 @@ void GameScene::menuCloseCallback(CCObject* pSender)
     CCDirector::sharedDirector()->end();
 }
 
+		
+void GameScene::createItem()
+{
+
+	CCSprite* maptemp;
+
+	
+	maptemp = g_map->getMap(1);
+	
+	if(maptemp->getPositionX() <0&&maptemp->getPositionX()>-4)
+	{
+		CCSprite* item[5];
+
+		for(int i =0;i<5;i++)
+		{
+			item[i] = CCSprite::create("mob.png");
+			item[i]->setAnchorPoint(ccp(0,0));
+			item[i]->setPosition(ccp(500+100*i,220));
+			this->addChild(item[i]);
+
+			g_itemlist.push_back(item[i]);
+
+		}
+	}
+
+	maptemp = g_map->getMap(2);
+	
+	if(maptemp->getPositionX() <=1270&&maptemp->getPositionX()>-4+1270)
+	{
+		CCSprite* item[5];
+
+		for(int i =0;i<5;i++)
+		{
+			item[i] = CCSprite::create("mob.png");
+			item[i]->setAnchorPoint(ccp(0,0));
+			item[i]->setPosition(ccp(500+100*i+1280,220));
+			this->addChild(item[i]);
+
+			g_itemlist.push_back(item[i]);
+
+		}
+	}
+		
+		
+}

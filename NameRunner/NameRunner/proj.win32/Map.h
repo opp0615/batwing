@@ -13,4 +13,5 @@ public:
 	Map(CCSprite* g_map1,CCSprite* g_map2);
 	
 	void Scrolling();
+	CCSprite* getMap(int n);
 };
