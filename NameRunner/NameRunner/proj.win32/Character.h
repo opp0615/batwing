@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cocos2d.h"
+
 using namespace cocos2d;
 
 class Character {
@@ -8,16 +9,20 @@ private:
 	CCPoint char_P;
 	CCSprite* m_character;
 	
+
 	float count;
 	float v;
 	float a;
 	float gravity;
 	float m_acell;
+	int width,height;
 	int collision;
 	int m_random_Map1,m_random_Map2 ,temp_randomMap;
 	bool m_mod;
 	int m_game_speed;
 	int m_click;
+	
+	int floor_check;
 
 public:
 	Character(CCSprite* g_character);
@@ -33,4 +38,7 @@ public:
 	void setClick(int g_click);
 	CCSprite* getChar();
 	int getClick();
+	void setfloorcheck(int g_floor_check);
+	int getWidth();
+	int getHeight();
 };

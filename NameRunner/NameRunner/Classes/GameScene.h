@@ -18,9 +18,22 @@ private:
 	Map* g_map;
 	itemManager* g_itemManager;
 	int g_click;
+	int game_speed;
+	int scroll_count;
 	CCSprite* m_character;
+	CCTMXTiledMap* floor_test1;
+	CCTMXTiledMap* floor_test2;
+
+	int GridX,GridY;
+
 	std::list<CCSprite*> g_itemlist;
 	std::list<CCSprite*>::iterator g_item_iterator;
+
+	std::list<CCSprite*> g_moblist;
+	std::list<CCSprite*>::iterator g_mob_iterator;
+
+	std::list<CCPoint> g_floor;
+	std::list<CCPoint>::iterator g_floor_iterator;
 
 public:
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
@@ -42,6 +55,18 @@ public:
 	void collisionCheck();
 
 	void itemScrolling();
+
+	void createmob();
+
+	void mobScrolling();
+
+	void mapScrolling();
+
+	void mapInit();
+
+	void floorcheck();
+
+	void charInit();
     // implement the "static node()" method manually
     CREATE_FUNC(GameScene);
 };

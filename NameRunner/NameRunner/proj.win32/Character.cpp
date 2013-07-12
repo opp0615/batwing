@@ -8,22 +8,45 @@ Character::Character(CCSprite* g_character)
 	a= gravity;
 	m_click = 0;
 	char_P = m_character->getPosition();
+	floor_check = 0;
+	width = 140;
+	height = 160;
 }
 
 void Character::Accel()
 {
 	char_P = m_character->getPosition();
-	if(char_P.y <=180 && v<6)
+	
+
+	if(floor_check ==0)
 	{
-		v=0;
-		m_click = 0;
-	}
-	else 
-	{
-		v -=a;
-	}
+		if(char_P.y <=200 && v<6)
+		{
+			v=0;
+			m_click = 0;
+		}
+
+
+		else
+		{
+			v -=a;
+		}
 	
 	m_character->setPositionY(char_P.y+v);
+	}
+
+	else
+	{
+	
+		v -=a;
+		m_character->setPositionY(char_P.y+v);
+
+		if(char_P.y>=200)
+		{
+			setfloorcheck(0);
+		}
+
+	}
 	
 	
 }
@@ -56,4 +79,20 @@ CCSprite* Character::getChar()
 {
 	return m_character;
 
+}
+
+void Character::setfloorcheck(int g_floor_check)
+{
+	floor_check = g_floor_check;
+
+}
+
+int Character::getWidth()
+{
+	return width;
+}
+
+int Character::getHeight()
+{
+	return height;
 }

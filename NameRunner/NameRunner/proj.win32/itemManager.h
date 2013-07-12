@@ -5,6 +5,7 @@ using namespace cocos2d;
 
 class itemManager{
 private:
+	int width,height;
 	std::list<CCSprite*> m_itemlist;
 public:
 	itemManager();
