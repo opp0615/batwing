@@ -36,6 +36,8 @@ public:
 	void getGameSpeed(int game_speed);
 	void setJump(float jump_v);
 	void setClick(int g_click);
+	void Animation();
+	int getCharSpeed();
 	CCSprite* getChar();
 	int getClick();
 	void setfloorcheck(int g_floor_check);

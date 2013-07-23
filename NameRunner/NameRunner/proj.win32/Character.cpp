@@ -20,7 +20,7 @@ void Character::Accel()
 
 	if(floor_check ==0)
 	{
-		if(char_P.y <=200 && v<6)
+		if(char_P.y <=100 && v<6)
 		{
 			v=0;
 			m_click = 0;
@@ -95,4 +95,10 @@ int Character::getWidth()
 int Character::getHeight()
 {
 	return height;
+}
+
+int Character::getCharSpeed()
+{
+	return v;
+	
 }

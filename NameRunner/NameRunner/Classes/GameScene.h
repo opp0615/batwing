@@ -32,6 +32,12 @@ private:
 	std::list<CCSprite*> g_moblist;
 	std::list<CCSprite*>::iterator g_mob_iterator;
 
+	std::list<CCSprite*> g_moblist2;
+	std::list<CCSprite*>::iterator g_mob_iterator2;
+
+	std::list<CCSprite*> g_object;
+	std::list<CCSprite*>::iterator g_object_iterator;
+
 	std::list<CCPoint> g_floor;
 	std::list<CCPoint>::iterator g_floor_iterator;
 
@@ -50,13 +56,10 @@ public:
 
 	void update(float dt);
 
-	void createItem();
-
 	void collisionCheck();
 
 	void itemScrolling();
 
-	void createmob();
 
 	void mobScrolling();
 
@@ -67,6 +70,11 @@ public:
 	void floorcheck();
 
 	void charInit();
+	
+	void map1create();
+
+	void map2create();
+
     // implement the "static node()" method manually
     CREATE_FUNC(GameScene);
 };
