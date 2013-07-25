@@ -11,6 +11,7 @@ Character::Character(CCSprite* g_character)
 	floor_check = 0;
 	width = 140;
 	height = 160;
+	bani = false;
 }
 
 void Character::Accel()
@@ -61,11 +62,17 @@ void Character::setJump(float jump_v)
 
 }
 
+void Character::mobjump()
+{
+	v= 10;
+}
+
 void Character::setClick(int g_click)
 {
 	if(m_click<=2)
 	{
 		m_click ++;
+		
 	}
 }
 

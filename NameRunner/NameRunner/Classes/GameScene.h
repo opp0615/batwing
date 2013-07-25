@@ -23,6 +23,14 @@ private:
 	CCSprite* m_character;
 	CCTMXTiledMap* floor_test1;
 	CCTMXTiledMap* floor_test2;
+	int banimation;
+	CCAction* runact;
+	CCAction* jump1act;
+	CCAction* jump2act;
+
+	CCAnimate *animate0;
+	CCAnimate *animate1;
+	CCAnimate *animate2;
 
 	int GridX,GridY;
 
@@ -42,6 +50,8 @@ private:
 	std::list<CCPoint>::iterator g_floor_iterator;
 
 public:
+
+	
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();  
 
@@ -60,7 +70,6 @@ public:
 
 	void itemScrolling();
 
-
 	void mobScrolling();
 
 	void mapScrolling();
@@ -75,6 +84,9 @@ public:
 
 	void map2create();
 
+	void animationControl();
+
+	void animationcreate();
     // implement the "static node()" method manually
     CREATE_FUNC(GameScene);
 };

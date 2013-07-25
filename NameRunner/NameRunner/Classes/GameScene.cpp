@@ -41,7 +41,7 @@ bool GameScene::init()
 		mapInit();
 
 		
-
+		banimation = 0;
 		
 		CCSprite* back1 = CCSprite::create("Italy_background.png");
 		back1->setAnchorPoint(ccp(0,0));
@@ -68,9 +68,11 @@ bool GameScene::init()
 
 void GameScene::update(float dt)
 {
+
 	g_map->Scrolling();
 	g_char->Accel();
 	collisionCheck();
+	animationControl();
 	itemScrolling();
 	mobScrolling();
 	mapScrolling();
@@ -156,10 +158,9 @@ void GameScene::collisionCheck()
 		
 		if(g_char->getCharSpeed() <0 && char_P.x+char_width >mob_P.x && char_P.x + char_width < mob_P.x + 120 &&char_P.y <mob_P.y+140 && char_P.y > mob_P.y +100)
 		{
+			g_char->mobjump();
 			this->removeChild((*g_mob_iterator)); 
 			g_mob_iterator=g_moblist.erase(g_mob_iterator++);
-			g_char->setJump(10);
-			CCLog("!!!Collision");
 			bDeleted = true;
 		}
 	
@@ -189,10 +190,10 @@ void GameScene::collisionCheck()
 		
 		if(g_char->getCharSpeed() <0 && char_P.x+char_width >mob2_P.x && char_P.x + char_width < mob2_P.x +120 &&char_P.y <mob2_P.y+225 && char_P.y >mob2_P.y + 180)
 		{
+			g_char->mobjump();
 			this->removeChild((*g_mob_iterator2)); 
 			g_mob_iterator2=g_moblist2.erase(g_mob_iterator2++);
-			g_char->setJump(10);
-			CCLog("!!!Collision");
+	
 			bDeleted = true;
 		}
 	
@@ -203,17 +204,28 @@ void GameScene::collisionCheck()
 		}
 	}
 	
-	
-	
+	//
+	if(char_P.y<= 100 && g_char->getClick() == 2 )
+	{
+		m_character->stopAction(jump2act);
+		banimation = 0;
+	}
+
+	if(char_P.y<= 100 && g_char->getClick() == 1 )
+	{
+		m_character->stopAction(jump1act);
+		banimation = 0;
+	}
 }
 void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 {
 	CCTouch* touch = (CCTouch*)(touches ->anyObject());
 	CCPoint location = touch->getLocationInView();
 	location = CCDirector::sharedDirector()->convertToGL(location);
-	
+
 	g_char->setClick(g_char->getClick());
 	g_char->setJump(10);
+
 }
 
 
@@ -321,7 +333,7 @@ void GameScene::mapScrolling()
 		floor_test2->setPositionX(7490);
 
 		//map1create();
-		//map2create();
+		map2create();
 	}
 }
 
@@ -342,8 +354,6 @@ void GameScene::floorcheck()
 
 	CCPoint temp;
 
-	CCLog("%d %d",GridX,GridY);
-
 	for(g_floor_iterator = g_floor.begin(); g_floor_iterator != g_floor.end(); g_floor_iterator++)
 	{
 
@@ -361,40 +371,70 @@ void GameScene::floorcheck()
 
 void GameScene::charInit()
 {
-
+	
 	CCSize s = CCDirector::sharedDirector()->getWinSize();
     
-    CCTexture2D *texture = CCTextureCache::sharedTextureCache()->addImage("main character_edit.png");
-    
-    // manually add frames to the frame cache
+    CCTexture2D *texture = CCTextureCache::sharedTextureCache()->addImage("main character.png");
+	 
+
+
+	    // manually add frames to the frame cache
     CCSpriteFrame *frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
     CCSpriteFrame *frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
-       
+	CCSpriteFrame *frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*2,0,140,160));
+    CCSpriteFrame *frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*3,0,140,160));
+	CCSpriteFrame *frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*4,0,140,160));
+    CCSpriteFrame *frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*5,0,140,160));
+	CCSpriteFrame *frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*6,0,140,160));
+    CCSpriteFrame *frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*7,0,140,160));
+	CCSpriteFrame *frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*8,0,140,160));
     
-    //
-    // Animation using Sprite BatchNode
-    //
 
+	
 	m_character = CCSprite::createWithSpriteFrame(frame0);
+
 	m_character->setAnchorPoint(ccp(0,0));
 	m_character->setPosition(ccp(100,100));
 
     this->addChild(m_character);
             
-    CCArray* animFrames = CCArray::createWithCapacity(6);
-    animFrames->addObject(frame0);
-    animFrames->addObject(frame1);
+
+
+    CCArray* animFrames0 = CCArray::createWithCapacity(6);
+    animFrames0->addObject(frame0);
+    animFrames0->addObject(frame1);
    
-    
-    CCAnimation *animation = CCAnimation::createWithSpriteFrames(animFrames, 0.1f);
-    CCAnimate *animate = CCAnimate::create(animation);
-    CCActionInterval* seq = CCSequence::create( animate,
-                       NULL);
-    
-	
+	CCArray* animFrames1 = CCArray::createWithCapacity(6);
+	animFrames1->addObject(frame2);
 
-    m_character->runAction(CCRepeatForever::create( seq ) );
+	CCArray* animFrames2 = CCArray::createWithCapacity(6);
+	animFrames2->addObject(frame3);
+	animFrames2->addObject(frame4);
+	animFrames2->addObject(frame5);
+	animFrames2->addObject(frame6);
+	animFrames2->addObject(frame7);
+	animFrames2->addObject(frame8);
+    	
+    CCAnimation * animation0 = CCAnimation::createWithSpriteFrames(animFrames0, 0.1f);
+    CCAnimate *animate0 = CCAnimate::create(animation0);
+    CCActionInterval* seq0 = CCSequence::create( animate0,NULL);
 
+	CCAnimation *  animation1 = CCAnimation::createWithSpriteFrames(animFrames1, 0.1f);
+    CCAnimate *animate1 = CCAnimate::create(animation1);
+    CCActionInterval* seq1 = CCSequence::create( animate1,NULL);
+
+	CCAnimation * animation2 = CCAnimation::createWithSpriteFrames(animFrames2, 0.1f);
+    CCAnimate *animate2 = CCAnimate::create(animation2);
+    CCActionInterval* seq2 = CCSequence::create( animate2,NULL);
+
+	runact   = CCRepeatForever::create(seq0);
+	jump1act = CCRepeatForever::create(seq1);
+	jump2act = CCRepeatForever::create(seq2);
+
+	//
+    // Animation using Sprite BatchNode
+    //
+	//m_character->runAction(runact);
 
 	/*
 	m_character = CCSprite::create("main character_edit.png",CCRect(140,0,140,160));
@@ -408,6 +448,62 @@ void GameScene::charInit()
 	CCPoint char_P = m_character->getPosition();
 	
 	GridX = char_P.x/20+2;
+
+
+}
+
+void GameScene::animationcreate()
+{
+	
+    
+    CCTexture2D *texture = CCTextureCache::sharedTextureCache()->addImage("main character.png");
+	 
+
+
+	    // manually add frames to the frame cache
+    CCSpriteFrame *frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
+    CCSpriteFrame *frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
+	CCSpriteFrame *frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*2,0,140,160));
+    CCSpriteFrame *frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*3,0,140,160));
+	CCSpriteFrame *frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*4,0,140,160));
+    CCSpriteFrame *frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*5,0,140,160));
+	CCSpriteFrame *frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*6,0,140,160));
+    CCSpriteFrame *frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*7,0,140,160));
+	CCSpriteFrame *frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*8,0,140,160));
+
+    CCArray* animFrames0 = CCArray::createWithCapacity(6);
+    animFrames0->addObject(frame0);
+    animFrames0->addObject(frame1);
+   
+	CCArray* animFrames1 = CCArray::createWithCapacity(6);
+	animFrames1->addObject(frame2);
+
+	CCArray* animFrames2 = CCArray::createWithCapacity(6);
+	animFrames2->addObject(frame3);
+	animFrames2->addObject(frame4);
+	animFrames2->addObject(frame5);
+	animFrames2->addObject(frame6);
+	animFrames2->addObject(frame7);
+	animFrames2->addObject(frame8);
+    	
+    CCAnimation * animation0 = CCAnimation::createWithSpriteFrames(animFrames0, 0.1f);
+    CCAnimate *animate0 = CCAnimate::create(animation0);
+    CCActionInterval* seq0 = CCSequence::create( animate0,NULL);
+
+	CCAnimation *  animation1 = CCAnimation::createWithSpriteFrames(animFrames1, 0.1f);
+    CCAnimate *animate1 = CCAnimate::create(animation1);
+    CCActionInterval* seq1 = CCSequence::create( animate1,NULL);
+
+	CCAnimation * animation2 = CCAnimation::createWithSpriteFrames(animFrames2, 0.1f);
+    CCAnimate *animate2 = CCAnimate::create(animation2);
+    CCActionInterval* seq2 = CCSequence::create( animate2,NULL);
+
+	runact   = CCRepeatForever::create(seq0);
+	jump1act = CCRepeatForever::create(seq1);
+	jump2act = CCRepeatForever::create(seq2);
+	
+    
+    
 
 
 }
@@ -678,3 +774,48 @@ void GameScene::map2create()
 
 
 }
+
+void GameScene::animationControl()
+{
+	
+	int click = g_char->getClick();
+	CCLog("click : %d , banimation : %d",click , banimation);
+	switch(click)
+	{
+	case 0:
+
+		if(banimation ==0)
+		{
+			animationcreate();
+			m_character->runAction(runact);
+			banimation = 1;
+		}
+
+		break;
+	case 1:
+		if(banimation == 1)
+		{
+			m_character->stopAction(runact);
+			animationcreate();
+			m_character->runAction(jump1act);
+			banimation = 2;
+		}
+		
+		break;
+	case 2:
+		if(banimation == 2)
+		{
+			
+			m_character->stopAction(jump1act);
+			animationcreate();
+			m_character->runAction(jump2act);
+			banimation = 3;
+
+			
+		}
+		break;
+
+	default:
+		break;
+	}
+ }

@@ -21,7 +21,8 @@ private:
 	bool m_mod;
 	int m_game_speed;
 	int m_click;
-	
+
+	bool bani;
 	int floor_check;
 
 public:
@@ -43,4 +44,6 @@ public:
 	void setfloorcheck(int g_floor_check);
 	int getWidth();
 	int getHeight();
+	void charani();
+	void mobjump();
 };
