@@ -3,7 +3,7 @@
 Character::Character(CCSprite* g_character)
 {
 	m_character = g_character;
-	gravity = 0.3f;
+	gravity = 0.42f;
 	v=0;
 	a= gravity;
 	m_click = 0;

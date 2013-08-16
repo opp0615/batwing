@@ -204,16 +204,11 @@ void GameScene::collisionCheck()
 		}
 	}
 	
-	//
-	if(char_P.y<= 100 && g_char->getClick() == 2 )
-	{
-		m_character->stopAction(jump2act);
-		banimation = 0;
-	}
+	//floor checked
 
-	if(char_P.y<= 100 && g_char->getClick() == 1 )
+	if( char_P.y >=90 && char_P.y<= 110 && g_char->getClick() !=0 && g_char->getCharSpeed()<0)
 	{
-		m_character->stopAction(jump1act);
+		m_character->cleanup();
 		banimation = 0;
 	}
 }
@@ -284,28 +279,28 @@ void GameScene::mobScrolling()
 
 void GameScene::mapInit()
 {
-
+	//Tile limit 16400
 	
-	floor_test1= CCTMXTiledMap::create("prototype.tmx");
+	floor_test1= CCTMXTiledMap::create("jump.tmx");
 	floor_test1->setAnchorPoint(ccp(0,0));
 	floor_test1->setPosition(ccp(0,0));
 
 	this->addChild(floor_test1,1);
 
 
-	map1create();
+	//map1create();
 
 	//map2 Init
 
 
 
-	floor_test2 = CCTMXTiledMap::create("prototype.tmx");
+	floor_test2 = CCTMXTiledMap::create("jump.tmx");
 	floor_test2->setAnchorPoint(ccp(0,0));
 	floor_test2->setPosition(ccp(7490,0));
 
 	this->addChild(floor_test2,1);
 
-	map2create();
+	//map2create();
 
 }
 
@@ -454,12 +449,10 @@ void GameScene::charInit()
 
 void GameScene::animationcreate()
 {
-	
+	//hehe by gotham
     
     CCTexture2D *texture = CCTextureCache::sharedTextureCache()->addImage("main character.png");
 	 
-
-
 	    // manually add frames to the frame cache
     CCSpriteFrame *frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
     CCSpriteFrame *frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
@@ -501,10 +494,6 @@ void GameScene::animationcreate()
 	runact   = CCRepeatForever::create(seq0);
 	jump1act = CCRepeatForever::create(seq1);
 	jump2act = CCRepeatForever::create(seq2);
-	
-    
-    
-
 
 }
 
@@ -661,7 +650,7 @@ void GameScene::map2create()
 							
 			if( gid !=0 ) 
 			{
-				g_floor.push_back(ccp(x+7490/20,size6.height/20-y));
+				g_floor.push_back(ccp(x+7500/20,size6.height/20-y));
 			}
 		}
 	}        
@@ -787,6 +776,7 @@ void GameScene::animationControl()
 		if(banimation ==0)
 		{
 			animationcreate();
+			m_character->cleanup();
 			m_character->runAction(runact);
 			banimation = 1;
 		}
@@ -795,7 +785,7 @@ void GameScene::animationControl()
 	case 1:
 		if(banimation == 1)
 		{
-			m_character->stopAction(runact);
+			m_character->cleanup();
 			animationcreate();
 			m_character->runAction(jump1act);
 			banimation = 2;
@@ -806,12 +796,10 @@ void GameScene::animationControl()
 		if(banimation == 2)
 		{
 			
-			m_character->stopAction(jump1act);
+			m_character->cleanup();
 			animationcreate();
 			m_character->runAction(jump2act);
 			banimation = 3;
-
-			
 		}
 		break;
 
