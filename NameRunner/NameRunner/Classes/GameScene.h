@@ -6,6 +6,7 @@
 #include "Character.h"
 #include "Map.h"
 #include "itemManager.h"
+#include "Score.h"
 
 #include <list>
 
@@ -17,20 +18,30 @@ private:
 	Character* g_char;
 	Map* g_map;
 	itemManager* g_itemManager;
-	int g_click;
-	int game_speed;
+	int g_click;	int game_speed;
 	int scroll_count;
 	CCSprite* m_character;
-	CCTMXTiledMap* floor_test1;
-	CCTMXTiledMap* floor_test2;
 	int banimation;
+
+	int g_checktime;
+	int g_temptime;
+	int g_loadtime;
+
+	int g_scroe;
+	int g_scroe_item;
+	int g_scroe_mob1;
+	int g_scroe_run;
+
+	bool g_checkmagnetic;
+
 	CCAction* runact;
 	CCAction* jump1act;
 	CCAction* jump2act;
 
-	CCAnimate *animate0;
-	CCAnimate *animate1;
-	CCAnimate *animate2;
+	CCAction* deadact;
+
+	CCTMXTiledMap* map_level[1];
+
 
 	int GridX,GridY;
 
@@ -45,6 +56,9 @@ private:
 
 	std::list<CCSprite*> g_object;
 	std::list<CCSprite*>::iterator g_object_iterator;
+
+	std::list<CCSprite*> g_magenetic_item;
+	std::list<CCSprite*>::iterator g_magenetic_item_iterator;
 
 	std::list<CCPoint> g_floor;
 	std::list<CCPoint>::iterator g_floor_iterator;
@@ -65,6 +79,8 @@ public:
 	//virtual void ccTouchesEnded(CCSet* touches,CCEvent* evnet);
 
 	void update(float dt);
+
+	void mapdataload(CCTMXTiledMap* map,int i);
 
 	void collisionCheck();
 
@@ -87,6 +103,13 @@ public:
 	void animationControl();
 
 	void animationcreate();
+
+	void magneticEffect();
+
+	int checkTime();
+
+	void scoreUpdate();
+	void scoreInit();
     // implement the "static node()" method manually
     CREATE_FUNC(GameScene);
 };

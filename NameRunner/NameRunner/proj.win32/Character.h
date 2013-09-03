@@ -15,14 +15,26 @@ private:
 	float a;
 	float gravity;
 	float m_acell;
-	int width,height;
+	int c_width,c_height;
 	int collision;
 	int m_random_Map1,m_random_Map2 ,temp_randomMap;
 	bool m_mod;
 	int m_game_speed;
-	int m_click;
+	int c_click;
+	
 
-	bool bani;
+
+	CCActionInterval* c_seq0;
+	CCActionInterval* c_seq1;
+	CCActionInterval* c_seq2;
+	CCAnimate* c_animate3;
+
+	CCAction* runact;
+	CCAction* jump1act;
+	CCAction* jump2act;
+	CCAction* deadact;
+
+	int c_checkanimation;
 	int floor_check;
 
 public:
@@ -42,8 +54,22 @@ public:
 	CCSprite* getChar();
 	int getClick();
 	void setfloorcheck(int g_floor_check);
+
 	int getWidth();
 	int getHeight();
+	void setWidth(int width);
+	void setHeight(int height);
+
 	void charani();
 	void mobjump();
+	void animationControl();
+	void animationCreate();
+	void animationInit();
+
+	int getCheckAnimation();
+	void setCheckAniamtion(int checkanimation);
+	void runDeadAnimation();
+	void runRunAniamtion();
+	void runJump1Animation();
+	void runJump2Animation();
 };
