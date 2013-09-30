@@ -9,28 +9,28 @@
       <UniqueIdentifier>{ef0a22ce-ca33-4567-8e05-8de22fbd5420}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
     </Filter>
-    <Filter Include="resource">
+    <Filter Include="source\resource">
       <UniqueIdentifier>{f9a03081-0b8d-4c0f-82e3-14cd84abe2e6}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;png;manifest</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\NameRunner.ico">
-      <Filter>resource</Filter>
+      <Filter>source\resource</Filter>
     </Image>
     <Image Include="..\Resources\CloseSelected.png">
-      <Filter>resource</Filter>
+      <Filter>source\resource</Filter>
     </Image>
     <Image Include="..\Resources\CloseNormal.png">
-      <Filter>resource</Filter>
+      <Filter>source\resource</Filter>
     </Image>
     <Image Include="..\Resources\HelloWorld.png">
-      <Filter>resource</Filter>
+      <Filter>source\resource</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NameRunner.rc">
-      <Filter>resource</Filter>
+      <Filter>source\resource</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +55,12 @@
     <ClInclude Include="itemManager.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="Score.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="MainmenuScene.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -73,6 +79,12 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="itemManager.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Score.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="MainmenuScene.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

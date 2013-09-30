@@ -7,11 +7,13 @@
 #include "Map.h"
 #include "itemManager.h"
 #include "Score.h"
+#include "MainmenuScene.h"
 
 #include <list>
 
 #include "SimpleAudioEngine.h"
 using namespace cocos2d;
+
 class GameScene : public cocos2d::CCLayerColor
 {
 private:
@@ -21,11 +23,16 @@ private:
 	int g_click;	int game_speed;
 	int scroll_count;
 	CCSprite* m_character;
+	CCSprite* nowpositionpoint ;
 	int banimation;
 
-	int g_checktime;
+	bool g_gameOverCheck;
+
+	bool g_pauseClick;
+	
+	float g_checktime;
 	int g_temptime;
-	int g_loadtime;
+	float g_loadtime;
 
 	int g_scroe;
 	int g_scroe_item;
@@ -40,8 +47,9 @@ private:
 
 	CCAction* deadact;
 
-	CCTMXTiledMap* map_level[1];
+	CCTMXTiledMap* map_level[4];
 
+	int pauseCheckAni;
 
 	int GridX,GridY;
 
@@ -92,7 +100,11 @@ public:
 
 	void mapInit();
 
+	void gameOver();
+
 	void floorcheck();
+
+	void pause();
 
 	void charInit();
 	

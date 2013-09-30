@@ -22,12 +22,15 @@ void Character::Accel()
 
 	if(floor_check ==0)
 	{
-		if(char_P.y <=126 && v<6)
+		if(char_P.y <=120 && v<6)
 		{
 			v=0;
 			c_click = 0;
-		}
 
+			//Character Jump Pixel (430,153.300018~153.4)
+			//Character Double Jump Pixel(650,306.600006)
+			//Mob Jump Pixel(140,15.400009)
+		}
 
 		else
 		{
@@ -39,7 +42,6 @@ void Character::Accel()
 
 	else
 	{
-	
 		v -=a;
 		m_character->setPositionY(char_P.y+v);
 
@@ -47,10 +49,7 @@ void Character::Accel()
 		{
 			setfloorcheck(0);
 		}
-
 	}
-	
-	
 }
 
 void Character::setJump(float jump_v)
@@ -239,9 +238,13 @@ void Character::animationCreate()
 	c_animate3 = CCAnimate::create(animation3);
 
 	runact   = CCRepeatForever::create(c_seq0);
+	runact->setTag(1);
 	jump1act = CCRepeatForever::create(c_seq1);
+	jump1act->setTag(2);
 	jump2act = CCRepeatForever::create(c_seq2);
+	jump2act->setTag(3);
 	deadact = CCRepeat::create(c_animate3,1);
+	deadact->setTag(4);
 
 }
 

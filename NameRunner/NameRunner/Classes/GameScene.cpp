@@ -1,5 +1,16 @@
 #include "GameScene.h"
 
+#define character_width 140
+#define character_height 160
+#define coin_width 40
+#define coin_height 40
+#define mob1_width 80
+#define mob1_height 142
+#define mob2_width 94
+#define mob2_height 226
+#define object_width 100
+#define object_height 110
+#define pause_identity 3
 CCScene* GameScene::scene()
 {
     CCScene * scene = NULL;
@@ -32,13 +43,19 @@ bool GameScene::init()
 		{
 			return false;
 		}
-
+		
 		game_speed = 10;
 
 		g_click = 0;
 		scroll_count = 0;
 	
 		mapInit();
+		
+		
+
+		g_pauseClick=false;
+		g_gameOverCheck = false;
+		pauseCheckAni=0;
 
 		g_checktime = 0;
 		g_temptime = 0;
@@ -50,6 +67,27 @@ bool GameScene::init()
 		g_scroe_mob1=0;
 		g_scroe_run=0;
 		
+		CCSprite* pause = CCSprite::create("130827_Pause.png");
+		pause->setAnchorPoint(ccp(0,0));
+		pause->setPosition(ccp(1160,620));
+		this->addChild(pause,2,pause_identity);
+
+
+		CCSprite* positionbar = CCSprite::create("130914_ingamebar_resized.png");
+		positionbar->setAnchorPoint(ccp(0,0));
+		positionbar->setPosition(ccp(160,645));
+		this->addChild(positionbar,2);
+
+		CCSprite* goalin = CCSprite::create("130830_Object2.png");
+		goalin->setAnchorPoint(ccp(0,0));
+		goalin->setPosition(ccp(1110,660));
+		this->addChild(goalin,1);
+
+		nowpositionpoint = CCSprite::create("130830_Object1_resized.png");
+		nowpositionpoint->setAnchorPoint(ccp(0,0));
+		nowpositionpoint->setPosition(ccp(159,669));
+		this->addChild(nowpositionpoint,2);
+
 		CCSprite* back1 = CCSprite::create("Italy_background.png");
 		back1->setAnchorPoint(ccp(0,0));
 		back1->setPosition(ccp(0,0));
@@ -70,19 +108,22 @@ bool GameScene::init()
 		this->setTouchEnabled(true);
 
 		this->schedule(schedule_selector(GameScene::update),0.01);
+		
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic(
+						"pandora.wav",true);
 	}
     return true;
 }
 
 void GameScene::update(float dt)
 {
-	if(checkTime() >= 100)
+	if(checkTime() >= 10)
 	{
-		g_checktime++;
+		g_checktime += 0.1;
 		g_temptime = 0;
-		CCLog("check time : %d ",g_checktime);
 	}
-
+	CCLog("X : %f Y: %f",g_char->getChar()->getPositionX(),g_char->getChar()->getPositionY());
+	nowpositionpoint->setPositionX(nowpositionpoint->getPositionX()+0.32);
 	g_map->Scrolling();
 	g_char->Accel();
 	collisionCheck();
@@ -139,7 +180,7 @@ void GameScene::collisionCheck()
 		}		
 
 
-		if(item_P.x <= char_P.x+char_width && item_P.x>=char_P.x && item_P.y >=char_P.y &&item_P.y<=char_P.y+char_height)
+		if(item_P.x  < char_P.x+character_width && item_P.x + coin_width > char_P.x && item_P.y + coin_height >char_P.y &&item_P.y<char_P.y+character_height)
 		{
 			this->removeChild((*g_item_iterator));
 			g_item_iterator=g_itemlist.erase(g_item_iterator++);
@@ -172,22 +213,22 @@ void GameScene::collisionCheck()
 			bDeleted = true;
 		}
 		
-		if( char_P.x+char_width >mob_P.x && char_P.x + char_width < mob_P.x + 120 &&char_P.y <mob_P.y+140 && char_P.y > mob_P.y -10)
+		if( char_P.x+character_width - 30 >mob_P.x && char_P.x + 30< mob_P.x + mob1_width &&char_P.y  + 30<mob_P.y+mob1_height && char_P.y + character_height -30 > mob_P.y -30)
 		{
-			if(g_char->getCharSpeed() < 0 && char_P.x+char_width >mob_P.x && char_P.x + char_width < mob_P.x + 120 &&char_P.y <mob_P.y+140 && char_P.y > mob_P.y + 140-30)
+			if(g_char->getCharSpeed() < 0 && char_P.x+character_width-30 >mob_P.x && char_P.x+30< mob_P.x + mob1_width &&char_P.y +30<mob_P.y+mob1_height && char_P.y + character_height-30 > mob_P.y + mob1_height -30)
 			{
 				g_char->mobjump();
 				this->removeChild((*g_mob_iterator)); 
 				g_mob_iterator=g_moblist.erase(g_mob_iterator++);
+				CCLog("!!!MobCollision!!!");
 				bDeleted = true;
 			}
 
-			if( char_P.x+char_width >mob_P.x+40 && char_P.x + char_width < mob_P.x + 120-40 &&char_P.y <mob_P.y+140-20 && char_P.y > mob_P.y -20)
+			if( char_P.x+character_width- 30  >mob_P.x && char_P.x+ 30< mob_P.x + mob1_width &&char_P.y+ 30 <mob_P.y+mob1_height -30 && char_P.y + character_height-30  > mob_P.y -10)
 			{
 				g_char->runDeadAnimation();
-				this->setTouchEnabled(false);
-				this->unschedule(schedule_selector(GameScene::update));
-
+				gameOver();
+			
 				return ;
 			}
 		}
@@ -216,22 +257,24 @@ void GameScene::collisionCheck()
 		}
 		
 
-		if(char_P.x+char_width >mob2_P.x && char_P.x + char_width < mob2_P.x +120 &&char_P.y <mob2_P.y+225 && char_P.y >mob2_P.y -10)
+		if(char_P.x+character_width -30 >mob2_P.x && char_P.x+30 < mob2_P.x + mob2_width &&char_P.y +30 <mob2_P.y+mob2_height && char_P.y + character_height-30 > mob2_P.y -30)
 		{
-			if(g_char->getCharSpeed() <0 && char_P.x+char_width >mob2_P.x && char_P.x + char_width < mob2_P.x +120 &&char_P.y <mob2_P.y+225 && char_P.y >mob2_P.y +225-30)
+			if(g_char->getCharSpeed() <0 && char_P.x+character_width -30 >mob2_P.x && char_P.x+30< mob2_P.x + mob2_width &&char_P.y +30<mob2_P.y+mob2_height && char_P.y + character_height-30 > mob2_P.y + mob2_height -30)
 			{
 				g_char->mobjump();
-				this->removeChild((*g_mob_iterator2)); 
+				this->removeChild((*g_mob_iterator2));
 				g_mob_iterator2=g_moblist2.erase(g_mob_iterator2++);
-	
+				
 				bDeleted = true;
 			}
 
-			if ( char_P.x+char_width >mob2_P.x +40 && char_P.x + char_width < mob2_P.x +120 -40 &&char_P.y <mob2_P.y+225-30 && char_P.y >mob2_P.y -30)
+			if (char_P.x+character_width-30 >mob2_P.x && char_P.x+30< mob2_P.x + mob2_width &&char_P.y+30 <mob2_P.y+mob2_height-30 && char_P.y + character_height-30 > mob2_P.y -10)
 			{
 				g_char->runDeadAnimation();
-				this->setTouchEnabled(false);
-				this->unschedule(schedule_selector(GameScene::update));
+				
+				gameOver();
+			
+
 				return ;
 			}
 		}
@@ -248,14 +291,16 @@ void GameScene::collisionCheck()
 		temp = *(g_object_iterator);
 		object_P = temp -> getPosition();
 		
-		if(char_P.x+char_width >object_P.x + 30 && char_P.x + char_width < object_P.x +100 -30 &&char_P.y <object_P.y+100 -30 && char_P.y >object_P.y -30)
+		if(char_P.x+character_width -30 >object_P.x +20 && char_P.x + 30 < object_P.x + object_width -20 &&char_P.y +30 <object_P.y+object_height -20 && char_P.y + character_height -30 > object_P.y -30)
 		{
 			g_char->runDeadAnimation();
-			this->setTouchEnabled(false);
-			this->unschedule(schedule_selector(GameScene::update));
-			return ;
-		}
+			
+			gameOver();
+		
 
+			return;
+		}
+		
 		if(!bDeleted )
 		{
 			g_object_iterator++;
@@ -268,6 +313,7 @@ void GameScene::collisionCheck()
 	{
 		m_character->cleanup();
 		g_char->setCheckAniamtion(0);
+		m_character->setPositionY(120);
 	}
 
 
@@ -277,18 +323,94 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 	CCTouch* touch = (CCTouch*)(touches ->anyObject());
 	CCPoint location = touch->getLocationInView();
 	location = CCDirector::sharedDirector()->convertToGL(location);
+	
+	if(g_gameOverCheck == false)
+	{
+		if(g_pauseClick == false)//pause
+		{
+			if( 1160<=location.x && location.x<=1160 + 70 && 620<=location.y && location.y<=620+70)
+			{
+				pause();
 
-	g_char->setClick(g_char->getClick());
-	g_char->setJump(15);
+				pauseCheckAni = g_char->getCheckAnimation();
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+				this->pauseSchedulerAndActions();
+				m_character->pauseSchedulerAndActions();
+				g_pauseClick = true;
+			}
+			
+			else //jump
+			{
+				g_char->setClick(g_char->getClick());
+				g_char->setJump(15);
+			}
 
+		}
+
+		//pause control
+
+
+		else //resume
+		{
+			if(895<=location.x && location.x<=895 + 250 && 411<=location.y && location.y<=411+75)
+			{
+				for(int i =88;i<93;i++)
+				{
+					this->removeChildByTag(i);
+				}
+			
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+				this->resumeSchedulerAndActions();
+				m_character->resumeSchedulerAndActions();
+				g_char->setCheckAniamtion(pauseCheckAni);
+				g_pauseClick = false;
+			}
+
+			else if(895<=location.x && location.x<=895 + 250 && 296<=location.y && location.y<=296+75)
+			{
+				CCScene *pScene = MainmenuScene::scene();
+				CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
+				CCDirector::sharedDirector()->replaceScene(pTran);
+				
+
+				g_pauseClick = false;
+			}
+
+			else if(895<=location.x && location.x<=895 + 250 && 181<=location.y && location.y<=181+75)
+			{
+				
+			}
+
+			else if(895<=location.x && location.x<=895 + 250 && 65<=location.y && location.y<=65+75)
+			{
+				
+			}
+
+		}
+
+	}
+
+	
+	else //dead(Game Over)
+	{
+		
+		if( 895<=location.x && location.x<=895 + 250 && 228<=location.y && location.y<=228+75)
+		{
+			
+			CCScene *pScene = GameScene::scene();
+			CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
+			CCDirector::sharedDirector()->replaceScene(pTran);
+		}
+
+		else if( 895<=location.x && location.x<=895 + 250 && 109<=location.y && location.y<=109+75)
+		{
+			CCScene *pScene = MainmenuScene::scene();
+			CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
+			CCDirector::sharedDirector()->replaceScene(pTran);
+		}
+	}
 }
 
-
-void GameScene::menuCloseCallback(CCObject* pSender)
-{
-    // "close" menu item clicked
-    CCDirector::sharedDirector()->end();
-}
 
 
 
@@ -340,15 +462,16 @@ void GameScene::mobScrolling()
 void GameScene::mapInit()
 {
 	//Tile limit 16400
-	
-	map_level[0]= CCTMXTiledMap::create("stage1level1copy.tmx");
+	/*
+	map_level[0]= CCTMXTiledMap::create("stage1level1.tmx");
 
 	map_level[0]->setAnchorPoint(ccp(0,0));
 	map_level[0]->setPosition(ccp(0,0));
 	
 	this->addChild(map_level[0],2);
 	mapdataload(map_level[0],0);
-	/*
+	*/
+
 	map_level[0] = CCTMXTiledMap::create("stage1level1.tmx");
 	map_level[1] = CCTMXTiledMap::create("stage1level2.tmx");
 	map_level[2] = CCTMXTiledMap::create("stage1level3.tmx");
@@ -359,17 +482,19 @@ void GameScene::mapInit()
 		map_level[i]->setAnchorPoint(ccp(0,0));
 		map_level[i]->setPosition(ccp(7500*i,0));
 		mapdataload(map_level[i],i);
-		this->addChild(map_level[i],2);
+		this->addChild(map_level[i],4);
 	}
 	
-	*/
+	
 }
 
 void GameScene::mapScrolling()
 {
+
+
 	CCPoint map_P;
 	
-	for(int i =0;i<1;i++)
+	for(int i =0;i<4;i++)
 	{
 		map_P = map_level[i]->getPosition();
 		map_level[i]->setPositionX(map_P.x-game_speed);
@@ -543,7 +668,7 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 	
 	CCTMXObjectGroup * group2 = map->objectGroupNamed("mob1");
 
-	if(group !=NULL)
+	if(group2 !=NULL)
 	{
 		CCArray* objects2 = group2->getObjects();
 
@@ -570,7 +695,7 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		
 	CCTMXObjectGroup * group3 = map->objectGroupNamed("mob2");
 
-	if(group !=NULL)
+	if(group3 !=NULL)
 	{
 		CCArray* objects3 = group3->getObjects();
 
@@ -588,6 +713,33 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 			g_moblist2.push_back(tempmob);
 
 			if(!dict3)
+			{
+				break;
+			}
+		}
+	}
+
+
+	CCTMXObjectGroup * group4 = map->objectGroupNamed("object");
+
+	if(group4 !=NULL)
+	{
+		CCArray* objects4 = group4->getObjects();
+
+		CCDictionary* dict4 = NULL;
+		CCObject* pObj4 = NULL;
+
+		CCARRAY_FOREACH(objects4,pObj4)
+		{
+			dict4 = (CCDictionary*)pObj4;
+
+			CCSprite* tempobject = CCSprite::create("130710_4.png");
+			tempobject->setAnchorPoint(ccp(0,0));
+			tempobject->setPosition(ccp( ((CCString*)dict4->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict4->objectForKey("y"))->floatValue() ));
+			this->addChild(tempobject,2);
+			g_object.push_back(tempobject);
+
+			if(!dict4)
 			{
 				break;
 			}
@@ -617,7 +769,9 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		}        
 
 	}
-	
+
+
+	/*
 	CCTMXLayer* layer2 = map->layerNamed("coin");
 	
 
@@ -648,6 +802,8 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 	
 	}
 
+	*/
+	/*
 	CCTMXLayer* layer3 = map->layerNamed("mob1");
 	
 	if(layer3 != NULL)
@@ -729,8 +885,10 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 				}
 			}
 		}        
-
+		
 	}
+
+	*/
 }
 
 void GameScene::magneticEffect()
@@ -770,7 +928,7 @@ void GameScene::magneticEffect()
 	{
 		
 
-		if( (g_checktime - g_loadtime) == 3)
+		if( (g_checktime - g_loadtime) == 3.3)
 		{
 			g_checkmagnetic = false;
 			return;
@@ -824,5 +982,64 @@ void GameScene::scoreUpdate()
 void GameScene::scoreInit()
 {
 
+}
 
+void GameScene::gameOver()
+{
+	CCSprite* gameover = CCSprite::create("fail.png");
+	gameover->setAnchorPoint(ccp(0,0));
+	gameover->setPosition(ccp(0,0));
+	this->addChild(gameover,5);
+
+	CCSprite* restart= CCSprite::create("replay.png");
+	restart->setAnchorPoint(ccp(0,0));
+	restart->setPosition(ccp(895,228));
+	this->addChild(restart,6);
+
+	CCSprite* mainmenu= CCSprite::create("gotomenu.png");
+	mainmenu->setAnchorPoint(ccp(0,0));
+	mainmenu->setPosition(ccp(895,109));
+	this->addChild(mainmenu,6);
+
+	g_gameOverCheck = true;
+
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+
+	this->unschedule(schedule_selector(GameScene::update));
+
+}
+
+void GameScene::pause()
+{
+	CCSprite* getter ;
+	getter = (CCSprite*)this->getChildByTag(pause_identity);
+
+	
+	a->setAmplitudeRate(1.2);
+	a->setDuration(0.2);
+
+	CCSprite* pause = CCSprite::create("pause.png");
+	pause->setAnchorPoint(ccp(0,0));
+	pause->setPosition(ccp(0,0));
+	this->addChild(pause,6,88);
+
+	CCSprite* contin = CCSprite::create("countinue.png");
+	contin->setAnchorPoint(ccp(0,0));
+	contin->setPosition(ccp(895, 411));
+	this->addChild(contin,7,89);
+
+	CCSprite* mainmenu = CCSprite::create("gotomenu.png");
+	mainmenu->setAnchorPoint(ccp(0,0));
+	mainmenu->setPosition(ccp(895, 296));
+	this->addChild(mainmenu,7,90);
+
+	CCSprite* sound = CCSprite::create("sound_on.png");
+	sound->setAnchorPoint(ccp(0,0));
+	sound->setPosition(ccp(895,181));
+	this->addChild(sound,7,91);
+
+	CCSprite* bgm = CCSprite::create("BGM_on.png");
+	bgm->setAnchorPoint(ccp(0,0));
+	bgm->setPosition(ccp(895,65));
+	this->addChild(bgm,7,92);
 }
