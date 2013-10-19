@@ -61,6 +61,18 @@
     <ClInclude Include="MainmenuScene.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="StrategyOfficeScene.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionScene.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSelectScene.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="RankScene.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -85,6 +97,18 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="MainmenuScene.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="StrategyOfficeScene.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="OptionScene.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="RankScene.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSelectScene.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

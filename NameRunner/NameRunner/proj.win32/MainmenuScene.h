@@ -2,7 +2,14 @@
 
 #include "cocos2d.h"
 #include "SimpleAudioEngine.h"
+
 #include "GameScene.h"
+#include "MainmenuScene.h"
+#include "OptionScene.h"
+#include "RankScene.h"
+#include "StrategyOfficeScene.h"
+#include "GameSelectScene.h"
+
 using namespace cocos2d;
 
 class MainmenuScene : public cocos2d::CCLayerColor

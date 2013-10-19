@@ -11,6 +11,14 @@
 #define object_width 100
 #define object_height 110
 #define pause_identity 3
+
+#define tag_pause 77
+
+#define tag_pauseScene 88
+#define tag_continue 89
+#define tag_goToMenu 90
+#define tag_soundControl 91
+#define tag_bgmControl 92
 CCScene* GameScene::scene()
 {
     CCScene * scene = NULL;
@@ -70,7 +78,7 @@ bool GameScene::init()
 		CCSprite* pause = CCSprite::create("130827_Pause.png");
 		pause->setAnchorPoint(ccp(0,0));
 		pause->setPosition(ccp(1160,620));
-		this->addChild(pause,2,pause_identity);
+		this->addChild(pause,2,tag_pause);
 
 
 		CCSprite* positionbar = CCSprite::create("130914_ingamebar_resized.png");
@@ -318,6 +326,7 @@ void GameScene::collisionCheck()
 
 
 }
+
 void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 {
 	CCTouch* touch = (CCTouch*)(touches ->anyObject());
@@ -330,6 +339,14 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 		{
 			if( 1160<=location.x && location.x<=1160 + 70 && 620<=location.y && location.y<=620+70)
 			{
+				CCSprite* getter;
+				getter = (CCSprite*)this->getChildByTag(tag_pause);
+
+				CCActionInterval* buttonPop = CCScaleTo::create(0.1,1.2,1.2);
+
+				getter->runAction(buttonPop);
+
+
 				pause();
 
 				pauseCheckAni = g_char->getCheckAnimation();
@@ -1012,34 +1029,34 @@ void GameScene::gameOver()
 void GameScene::pause()
 {
 	CCSprite* getter ;
-	getter = (CCSprite*)this->getChildByTag(pause_identity);
+	getter = (CCSprite*)this->getChildByTag(tag_pause);
 
-	
+	/*
 	a->setAmplitudeRate(1.2);
 	a->setDuration(0.2);
-
+	*/
 	CCSprite* pause = CCSprite::create("pause.png");
 	pause->setAnchorPoint(ccp(0,0));
 	pause->setPosition(ccp(0,0));
-	this->addChild(pause,6,88);
+	this->addChild(pause,6,tag_pauseScene);
 
 	CCSprite* contin = CCSprite::create("countinue.png");
 	contin->setAnchorPoint(ccp(0,0));
 	contin->setPosition(ccp(895, 411));
-	this->addChild(contin,7,89);
+	this->addChild(contin,7,tag_continue);
 
 	CCSprite* mainmenu = CCSprite::create("gotomenu.png");
 	mainmenu->setAnchorPoint(ccp(0,0));
 	mainmenu->setPosition(ccp(895, 296));
-	this->addChild(mainmenu,7,90);
+	this->addChild(mainmenu,7,tag_goToMenu);
 
 	CCSprite* sound = CCSprite::create("sound_on.png");
 	sound->setAnchorPoint(ccp(0,0));
 	sound->setPosition(ccp(895,181));
-	this->addChild(sound,7,91);
+	this->addChild(sound,7,tag_soundControl);
 
 	CCSprite* bgm = CCSprite::create("BGM_on.png");
 	bgm->setAnchorPoint(ccp(0,0));
 	bgm->setPosition(ccp(895,65));
-	this->addChild(bgm,7,92);
+	this->addChild(bgm,7,tag_bgmControl);
 }
