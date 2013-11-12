@@ -11,6 +11,8 @@
 #define object_width 100
 #define object_height 110
 #define pause_identity 3
+#define boss_width 200
+#define boss_height 220
 
 #define tag_pause 77
 
@@ -21,46 +23,47 @@
 #define tag_bgmControl 92
 CCScene* GameScene::scene()
 {
-    CCScene * scene = NULL;
-    do 
-    {
-        // 'scene' is an autorelease object
-        scene = CCScene::create();
-        CC_BREAK_IF(! scene);
+	CCScene * scene = NULL;
+	do 
+	{
+		// 'scene' is an autorelease object
+		scene = CCScene::create();
+		CC_BREAK_IF(! scene);
 
-        // 'layer' is an autorelease object
-        GameScene *layer = GameScene::create();
-        CC_BREAK_IF(! layer);
+		// 'layer' is an autorelease object
+		GameScene *layer = GameScene::create();
+		CC_BREAK_IF(! layer);
 
-        // add layer as a child to scene
-        scene->addChild(layer);
-    } while (0);
+		// add layer as a child to scene
+		scene->addChild(layer);
+	} while (0);
 
-    // return the scene
-    return scene;
+	// return the scene
+	return scene;
 }
 
 // on "init" you need to initialize your instance
 bool GameScene::init()
 {
-	
+
 	if(CCLayer::init())
 	{
-		
+
 		if (! CCLayerColor::initWithColor( ccc4(255,255,255,255) ) )
 		{
 			return false;
 		}
-		
+
 		game_speed = 10;
 
 		g_click = 0;
 		scroll_count = 0;
-	
-		mapInit();
-		
-		
 
+		mapInit();
+
+
+		scoreInit();
+		g_gameSuccess =false;
 		g_pauseClick=false;
 		g_gameOverCheck = false;
 		pauseCheckAni=0;
@@ -70,30 +73,33 @@ bool GameScene::init()
 		g_loadtime =0;
 		g_checkmagnetic;
 
-		g_scroe=0;
-		g_scroe_item=0;
-		g_scroe_mob1=0;
-		g_scroe_run=0;
-		
 		CCSprite* pause = CCSprite::create("130827_Pause.png");
 		pause->setAnchorPoint(ccp(0,0));
 		pause->setPosition(ccp(1160,620));
 		this->addChild(pause,2,tag_pause);
 
+		g_virtual_char.setPoint(100,120);
 
-		CCSprite* positionbar = CCSprite::create("130914_ingamebar_resized.png");
+		/*
+		CCSprite* score_bakground = CCSprite::create("130827_score2.png");
+		score_bakground->setAnchorPoint(ccp(0,0));
+		score_bakground->setPosition(ccp(50,600));
+		this->addChild(score_bakground,2);
+		*/
+
+		CCSprite* positionbar = CCSprite::create("131104_ingamebar_resized(496x15).png");
 		positionbar->setAnchorPoint(ccp(0,0));
-		positionbar->setPosition(ccp(160,645));
+		positionbar->setPosition(ccp(440,615));
 		this->addChild(positionbar,2);
 
 		CCSprite* goalin = CCSprite::create("130830_Object2.png");
 		goalin->setAnchorPoint(ccp(0,0));
-		goalin->setPosition(ccp(1110,660));
+		goalin->setPosition(ccp(931,630));
 		this->addChild(goalin,1);
 
 		nowpositionpoint = CCSprite::create("130830_Object1_resized.png");
 		nowpositionpoint->setAnchorPoint(ccp(0,0));
-		nowpositionpoint->setPosition(ccp(159,669));
+		nowpositionpoint->setPosition(ccp(435,630));
 		this->addChild(nowpositionpoint,2);
 
 		CCSprite* back1 = CCSprite::create("Italy_background.png");
@@ -104,23 +110,21 @@ bool GameScene::init()
 		CCSprite* back2 = CCSprite::create("Italy_background.png");
 		back2->setAnchorPoint(ccp(0,0));
 		this->addChild(back2,0);
-		
+
 
 		g_map = new Map(back1,back2,game_speed);
-		
+
 
 		charInit();
-		
-		Score class_Score;
 
 		this->setTouchEnabled(true);
 
 		this->schedule(schedule_selector(GameScene::update),0.01);
-		
+
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic(
-						"pandora.wav",true);
+			"pandora.wav",true);
 	}
-    return true;
+	return true;
 }
 
 void GameScene::update(float dt)
@@ -130,26 +134,26 @@ void GameScene::update(float dt)
 		g_checktime += 0.1;
 		g_temptime = 0;
 	}
-	CCLog("X : %f Y: %f",g_char->getChar()->getPositionX(),g_char->getChar()->getPositionY());
-	nowpositionpoint->setPositionX(nowpositionpoint->getPositionX()+0.32);
+	nowpositionpoint->setPositionX(nowpositionpoint->getPositionX()+0.1);
 	g_map->Scrolling();
 	g_char->Accel();
-	collisionCheck();
 	g_char->animationControl();
 	itemScrolling();
 	mobScrolling();
 	mapScrolling();
 	floorcheck();
+	scoreUpdate();
+	collisionCheck();
 
 }
 
 void GameScene::collisionCheck()
 {
-	
-	
+
+
 	CCPoint char_P=m_character->getPosition();
 
-	
+
 	CCSprite* char_temp;
 	CCSprite* temp;
 	CCPoint char_p;
@@ -167,65 +171,138 @@ void GameScene::collisionCheck()
 
 	char_width = g_char->getWidth();
 	char_height =g_char->getHeight();
-	
+
 
 	//item collision check
-	
+
 	
 
-	for(g_item_iterator = g_itemlist.begin(); g_item_iterator != g_itemlist.end(); )
+	for(g_coin_bronze_iterator = g_coin_bronze.begin(); g_coin_bronze_iterator != g_coin_bronze.end(); )
 	{
 		bool bDeleted = false;
-		temp = *(g_item_iterator);
-			
+		temp = *(g_coin_bronze_iterator);
+
 		item_P=temp->getPosition();
-		
+
 		if(item_P.x<-200)
 		{
-			this->removeChild((*g_item_iterator)); 
-			g_item_iterator=g_itemlist.erase(g_item_iterator++);
+			this->removeChild((*g_coin_bronze_iterator)); 
+			g_coin_bronze_iterator=g_coin_bronze.erase(g_coin_bronze_iterator++);
 			bDeleted = true;
 		}		
 
 
 		if(item_P.x  < char_P.x+character_width && item_P.x + coin_width > char_P.x && item_P.y + coin_height >char_P.y &&item_P.y<char_P.y+character_height)
 		{
-			this->removeChild((*g_item_iterator));
-			g_item_iterator=g_itemlist.erase(g_item_iterator++);
+			g_score_item++;
+			this->removeChild((*g_coin_bronze_iterator));
+			g_coin_bronze_iterator=g_coin_bronze.erase(g_coin_bronze_iterator++);
 			bDeleted = true;
 		}
 
 		if (!bDeleted)
 		{
-			g_item_iterator++;
+			g_coin_bronze_iterator++;
 		}
-	
+
 	}
-	
+
+
+	for(g_coin_silver_iterator = g_coin_silver.begin(); g_coin_silver_iterator != g_coin_silver.end(); )
+	{
+		bool bDeleted = false;
+		temp = *(g_coin_silver_iterator);
+
+		item_P=temp->getPosition();
+
+		if(item_P.x<-200)
+		{
+			this->removeChild((*g_coin_silver_iterator)); 
+			g_coin_silver_iterator=g_coin_silver.erase(g_coin_silver_iterator++);
+			bDeleted = true;
+		}		
+
+
+		if(item_P.x  < char_P.x+character_width && item_P.x + coin_width > char_P.x && item_P.y + coin_height >char_P.y &&item_P.y<char_P.y+character_height)
+		{
+			g_score_item++;
+			this->removeChild((*g_coin_silver_iterator));
+			g_coin_silver_iterator=g_coin_silver.erase(g_coin_silver_iterator++);
+			bDeleted = true;
+		}
+
+		if (!bDeleted)
+		{
+			g_coin_silver_iterator++;
+		}
+
+	}
+
+
+
+	for(g_coin_gold_iterator = g_coin_gold.begin(); g_coin_gold_iterator != g_coin_gold.end(); )
+	{
+		bool bDeleted = false;
+		temp = *(g_coin_gold_iterator);
+
+		item_P=temp->getPosition();
+
+		if(item_P.x<-200)
+		{
+			this->removeChild((*g_coin_gold_iterator)); 
+			g_coin_gold_iterator=g_coin_gold.erase(g_coin_gold_iterator++);
+			bDeleted = true;
+		}		
+
+
+		if(item_P.x  < char_P.x+character_width && item_P.x + coin_width > char_P.x && item_P.y + coin_height >char_P.y &&item_P.y<char_P.y+character_height)
+		{
+			g_score_item++;
+			this->removeChild((*g_coin_gold_iterator));
+			g_coin_gold_iterator=g_coin_gold.erase(g_coin_gold_iterator++);
+			bDeleted = true;
+		}
+
+		if (!bDeleted)
+		{
+			g_coin_gold_iterator++;
+		}
+
+	}
+
+
 	//mob collision check
 	CCPoint mob_P;
-	
-	
+
+	mob_P = g_boss->getPosition();
+
+	if(mob_P.x  < char_P.x+character_width && mob_P.x + boss_width > char_P.x && mob_P.y + boss_height >char_P.y &&mob_P.y<char_P.y+character_height)
+	{
+		this->removeChild(g_boss);
+		endStage();
+	}
+
 	for(g_mob_iterator = g_moblist.begin(); g_mob_iterator != g_moblist.end(); )
 	{
 		bool bDeleted = false;
 
 		temp = *(g_mob_iterator);
 		mob_P=temp->getPosition();
-		
+
 		if(mob_P.x<-200)
 		{
 			this->removeChild((*g_mob_iterator)); 
 			g_mob_iterator=g_moblist.erase(g_mob_iterator++);
-			
+
 			bDeleted = true;
 		}
-		
+
 		if( char_P.x+character_width - 30 >mob_P.x && char_P.x + 30< mob_P.x + mob1_width &&char_P.y  + 30<mob_P.y+mob1_height && char_P.y + character_height -30 > mob_P.y -30)
 		{
 			if(g_char->getCharSpeed() < 0 && char_P.x+character_width-30 >mob_P.x && char_P.x+30< mob_P.x + mob1_width &&char_P.y +30<mob_P.y+mob1_height && char_P.y + character_height-30 > mob_P.y + mob1_height -30)
 			{
 				g_char->mobjump();
+				g_score_mob1++;
 				this->removeChild((*g_mob_iterator)); 
 				g_mob_iterator=g_moblist.erase(g_mob_iterator++);
 				CCLog("!!!MobCollision!!!");
@@ -234,19 +311,19 @@ void GameScene::collisionCheck()
 
 			if( char_P.x+character_width- 30  >mob_P.x && char_P.x+ 30< mob_P.x + mob1_width &&char_P.y+ 30 <mob_P.y+mob1_height -30 && char_P.y + character_height-30  > mob_P.y -10)
 			{
-				g_char->runDeadAnimation();
+				
 				gameOver();
-			
+
 				return ;
 			}
 		}
-		
+
 		if(!bDeleted )
 		{
 			g_mob_iterator++;
 		}
 	}
-	
+
 	//mob2 collision
 
 	for(g_mob_iterator2 = g_moblist2.begin(); g_mob_iterator2 != g_moblist2.end(); )
@@ -255,33 +332,34 @@ void GameScene::collisionCheck()
 
 		temp = *(g_mob_iterator2);
 		mob2_P=temp->getPosition();
-		
+
 		if(mob2_P.x<-200)
 		{
 			this->removeChild((*g_mob_iterator2)); 
 			g_mob_iterator2=g_moblist2.erase(g_mob_iterator2++);
-			
+
 			bDeleted = true;
 		}
-		
+
 
 		if(char_P.x+character_width -30 >mob2_P.x && char_P.x+30 < mob2_P.x + mob2_width &&char_P.y +30 <mob2_P.y+mob2_height && char_P.y + character_height-30 > mob2_P.y -30)
 		{
 			if(g_char->getCharSpeed() <0 && char_P.x+character_width -30 >mob2_P.x && char_P.x+30< mob2_P.x + mob2_width &&char_P.y +30<mob2_P.y+mob2_height && char_P.y + character_height-30 > mob2_P.y + mob2_height -30)
 			{
 				g_char->mobjump();
+				g_score_mob2++;
 				this->removeChild((*g_mob_iterator2));
 				g_mob_iterator2=g_moblist2.erase(g_mob_iterator2++);
-				
+
 				bDeleted = true;
 			}
 
 			if (char_P.x+character_width-30 >mob2_P.x && char_P.x+30< mob2_P.x + mob2_width &&char_P.y+30 <mob2_P.y+mob2_height-30 && char_P.y + character_height-30 > mob2_P.y -10)
 			{
 				g_char->runDeadAnimation();
-				
+
 				gameOver();
-			
+
 
 				return ;
 			}
@@ -298,17 +376,17 @@ void GameScene::collisionCheck()
 		bool bDeleted = false;
 		temp = *(g_object_iterator);
 		object_P = temp -> getPosition();
-		
+
 		if(char_P.x+character_width -30 >object_P.x +20 && char_P.x + 30 < object_P.x + object_width -20 &&char_P.y +30 <object_P.y+object_height -20 && char_P.y + character_height -30 > object_P.y -30)
 		{
 			g_char->runDeadAnimation();
-			
+
 			gameOver();
-		
+
 
 			return;
 		}
-		
+
 		if(!bDeleted )
 		{
 			g_object_iterator++;
@@ -332,8 +410,8 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 	CCTouch* touch = (CCTouch*)(touches ->anyObject());
 	CCPoint location = touch->getLocationInView();
 	location = CCDirector::sharedDirector()->convertToGL(location);
-	
-	if(g_gameOverCheck == false)
+
+	if(g_gameOverCheck == false && g_gameSuccess ==false)
 	{
 		if(g_pauseClick == false)//pause
 		{
@@ -355,7 +433,7 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 				m_character->pauseSchedulerAndActions();
 				g_pauseClick = true;
 			}
-			
+
 			else //jump
 			{
 				g_char->setClick(g_char->getClick());
@@ -375,7 +453,7 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 				{
 					this->removeChildByTag(i);
 				}
-			
+
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
 				this->resumeSchedulerAndActions();
 				m_character->resumeSchedulerAndActions();
@@ -388,32 +466,30 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 				CCScene *pScene = MainmenuScene::scene();
 				CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
 				CCDirector::sharedDirector()->replaceScene(pTran);
-				
+
 
 				g_pauseClick = false;
 			}
 
 			else if(895<=location.x && location.x<=895 + 250 && 181<=location.y && location.y<=181+75)
 			{
-				
+
 			}
 
 			else if(895<=location.x && location.x<=895 + 250 && 65<=location.y && location.y<=65+75)
 			{
-				
+
 			}
-
 		}
-
 	}
 
-	
-	else //dead(Game Over)
+
+	else if(g_gameOverCheck ==true)//dead(Game Over)
 	{
-		
+
 		if( 895<=location.x && location.x<=895 + 250 && 228<=location.y && location.y<=228+75)
 		{
-			
+
 			CCScene *pScene = GameScene::scene();
 			CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
 			CCDirector::sharedDirector()->replaceScene(pTran);
@@ -426,6 +502,20 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 			CCDirector::sharedDirector()->replaceScene(pTran);
 		}
 	}
+
+	else if(g_gameSuccess ==true)
+	{
+		
+		if( 895<=location.x && location.x<=895 + 250 && 109<=location.y && location.y<=109+75)
+		{
+			CCScene *pScene = MainmenuScene::scene();
+			CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
+			CCDirector::sharedDirector()->replaceScene(pTran);
+		}
+
+	}
+
+
 }
 
 
@@ -433,22 +523,71 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 
 void GameScene::itemScrolling()
 {
-	
+
 	CCPoint item_P;
 	CCSprite* temp;
-	for(g_item_iterator = g_itemlist.begin(); g_item_iterator != g_itemlist.end(); g_item_iterator++)
+
+	//coin scrolling
+	for(g_coin_bronze_iterator = g_coin_bronze.begin(); g_coin_bronze_iterator != g_coin_bronze.end(); g_coin_bronze_iterator++)
 	{
-		temp = (*g_item_iterator);
+		temp = (*g_coin_bronze_iterator);
 		item_P=temp->getPosition();
 		temp->setPosition(ccp(item_P.x-game_speed,item_P.y));
 	}
+
+
+	for(g_coin_silver_iterator = g_coin_silver.begin(); g_coin_silver_iterator != g_coin_silver.end(); g_coin_silver_iterator++)
+	{
+		temp = (*g_coin_silver_iterator);
+		item_P=temp->getPosition();
+		temp->setPosition(ccp(item_P.x-game_speed,item_P.y));
+	}
+
+	
+	for(g_coin_gold_iterator = g_coin_gold.begin(); g_coin_gold_iterator != g_coin_gold.end(); g_coin_gold_iterator++)
+	{
+		temp = (*g_coin_gold_iterator);
+		item_P=temp->getPosition();
+		temp->setPosition(ccp(item_P.x-game_speed,item_P.y));
+	}
+
+	//item scrolling
+	for(g_huge_item_iterator = g_huge_item.begin(); g_huge_item_iterator != g_huge_item.end(); g_huge_item_iterator++)
+	{
+		temp = (*g_huge_item_iterator);
+		item_P=temp->getPosition();
+		temp->setPosition(ccp(item_P.x-game_speed,item_P.y));
+	}
+
+	for(g_coin_item_iterator = g_coin_item.begin(); g_coin_item_iterator != g_coin_item.end(); g_coin_item_iterator++)
+	{
+		temp = (*g_coin_item_iterator);
+		item_P=temp->getPosition();
+		temp->setPosition(ccp(item_P.x-game_speed,item_P.y));
+	}
+
+	for(g_run_item_iterator = g_run_item.begin(); g_run_item_iterator != g_run_item.end(); g_run_item_iterator++)
+	{
+		temp = (*g_run_item_iterator);
+		item_P=temp->getPosition();
+		temp->setPosition(ccp(item_P.x-game_speed,item_P.y));
+	}
+
+	for(g_magnet_item_iterator = g_magnet_item.begin(); g_magnet_item_iterator != g_magnet_item.end(); g_magnet_item_iterator++)
+	{
+		temp = (*g_magnet_item_iterator);
+		item_P=temp->getPosition();
+		temp->setPosition(ccp(item_P.x-game_speed,item_P.y));
+	}
+
+
 
 }
 
 
 void GameScene::mobScrolling()
 {
-	
+
 	CCPoint mob_P;
 	CCSprite* temp;
 
@@ -466,13 +605,15 @@ void GameScene::mobScrolling()
 		temp->setPosition(ccp(mob_P.x-game_speed,mob_P.y));
 	}
 
-		
+
 	for(g_object_iterator = g_object.begin(); g_object_iterator != g_object.end(); g_object_iterator++)
 	{
 		temp = (*g_object_iterator);
 		mob_P=temp->getPosition();
 		temp->setPosition(ccp(mob_P.x-game_speed,mob_P.y));
 	}
+	mob_P = g_boss->getPosition();
+	g_boss->setPosition(ccp(mob_P.x-game_speed,mob_P.y));
 
 }
 
@@ -484,15 +625,15 @@ void GameScene::mapInit()
 
 	map_level[0]->setAnchorPoint(ccp(0,0));
 	map_level[0]->setPosition(ccp(0,0));
-	
+
 	this->addChild(map_level[0],2);
 	mapdataload(map_level[0],0);
 	*/
 
-	map_level[0] = CCTMXTiledMap::create("stage1level1.tmx");
-	map_level[1] = CCTMXTiledMap::create("stage1level2.tmx");
-	map_level[2] = CCTMXTiledMap::create("stage1level3.tmx");
-	map_level[3] = CCTMXTiledMap::create("stage1level4.tmx");
+	map_level[0] = CCTMXTiledMap::create("stage1_level1.tmx");
+	map_level[1] = CCTMXTiledMap::create("stage1_level2.tmx");
+	map_level[2] = CCTMXTiledMap::create("stage1_level3.tmx");
+	map_level[3] = CCTMXTiledMap::create("stage1_level4.tmx");
 
 	for(int i=0;i<4;i++)
 	{
@@ -501,8 +642,8 @@ void GameScene::mapInit()
 		mapdataload(map_level[i],i);
 		this->addChild(map_level[i],4);
 	}
-	
-	
+
+	CCLog("");
 }
 
 void GameScene::mapScrolling()
@@ -510,7 +651,7 @@ void GameScene::mapScrolling()
 
 
 	CCPoint map_P;
-	
+
 	for(int i =0;i<4;i++)
 	{
 		map_P = map_level[i]->getPosition();
@@ -518,7 +659,7 @@ void GameScene::mapScrolling()
 		/*
 		if(map_P.x < -8000)
 		{
-			this->removeChild(map_level[i]);
+		this->removeChild(map_level[i]);
 		}
 		*/
 	}
@@ -528,71 +669,67 @@ void GameScene::mapScrolling()
 
 void GameScene::floorcheck()
 {
-	CCPoint char_P = m_character->getPosition();
-	
-	GridY = char_P.y/20;
-
-	scroll_count += game_speed;
-
-	if(scroll_count >=20)
-	{
-		GridX++;
-		scroll_count=0;
-	}
+	CCPoint temp_char = m_character->getPosition();
 
 	CCPoint temp;
-
+	g_virtual_char.setPoint(g_virtual_char.x+ game_speed,temp_char.y);
+	CCLog("%f %f",g_virtual_char.x,g_virtual_char.y ); 
 	for(g_floor_iterator = g_floor.begin(); g_floor_iterator != g_floor.end(); g_floor_iterator++)
 	{
 
 		temp = *(g_floor_iterator);
-		
-		if(GridX == temp.x && GridY ==temp.y)
+
+		if(temp.x  < g_virtual_char.x+character_width && temp.x + coin_width > g_virtual_char.x && temp.y + coin_height >g_virtual_char.y &&temp.y<g_virtual_char.y+character_height)
 		{
 			g_char->setfloorcheck(1);
 
 		}
+
+		temp.setPoint(temp.x -game_speed ,temp.y) ;
+
 	}
+
+
 
 }
 
 
 void GameScene::charInit()
 {
-	
+
 	CCSize s = CCDirector::sharedDirector()->getWinSize();
-    
-    CCTexture2D *texture = CCTextureCache::sharedTextureCache()->addImage("main character.png");
-	 
+
+	CCTexture2D *texture = CCTextureCache::sharedTextureCache()->addImage("main character.png");
 
 
-	    // manually add frames to the frame cache
-    CCSpriteFrame *frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
-    CCSpriteFrame *frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
+
+	// manually add frames to the frame cache
+	CCSpriteFrame *frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
+	CCSpriteFrame *frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
 	CCSpriteFrame *frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*2,0,140,160));
-    CCSpriteFrame *frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*3,0,140,160));
+	CCSpriteFrame *frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*3,0,140,160));
 	CCSpriteFrame *frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*4,0,140,160));
-    CCSpriteFrame *frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*5,0,140,160));
+	CCSpriteFrame *frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*5,0,140,160));
 	CCSpriteFrame *frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*6,0,140,160));
-    CCSpriteFrame *frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*7,0,140,160));
+	CCSpriteFrame *frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*7,0,140,160));
 	CCSpriteFrame *frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*8,0,140,160));
-    CCSpriteFrame *frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*9,0,140,160));
+	CCSpriteFrame *frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*9,0,140,160));
 	CCSpriteFrame *frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*10,0,140,160));
 
-	
+
 	m_character = CCSprite::createWithSpriteFrame(frame0);
 
 	m_character->setAnchorPoint(ccp(0,0));
 	m_character->setPosition(ccp(100,120));
 
-    this->addChild(m_character,3);
-            
+	this->addChild(m_character,3);
 
 
-    CCArray* animFrames0 = CCArray::createWithCapacity(6);
-    animFrames0->addObject(frame0);
-    animFrames0->addObject(frame1);
-   
+
+	CCArray* animFrames0 = CCArray::createWithCapacity(6);
+	animFrames0->addObject(frame0);
+	animFrames0->addObject(frame1);
+
 	CCArray* animFrames1 = CCArray::createWithCapacity(6);
 	animFrames1->addObject(frame2);
 
@@ -603,24 +740,24 @@ void GameScene::charInit()
 	animFrames2->addObject(frame6);
 	animFrames2->addObject(frame7);
 	animFrames2->addObject(frame8);
-    	
 
-	
+
+
 	CCArray* animFrames3 = CCArray::createWithCapacity(2);
 	animFrames3 ->addObject(frame9);
 	animFrames3 ->addObject(frame10);
 
-    CCAnimation * animation0 = CCAnimation::createWithSpriteFrames(animFrames0, 0.1f);
-    CCAnimate *animate0 = CCAnimate::create(animation0);
-    CCActionInterval* seq0 = CCSequence::create( animate0,NULL);
+	CCAnimation * animation0 = CCAnimation::createWithSpriteFrames(animFrames0, 0.1f);
+	CCAnimate *animate0 = CCAnimate::create(animation0);
+	CCActionInterval* seq0 = CCSequence::create( animate0,NULL);
 
 	CCAnimation *  animation1 = CCAnimation::createWithSpriteFrames(animFrames1, 0.1f);
-    CCAnimate *animate1 = CCAnimate::create(animation1);
-    CCActionInterval* seq1 = CCSequence::create( animate1,NULL);
+	CCAnimate *animate1 = CCAnimate::create(animation1);
+	CCActionInterval* seq1 = CCSequence::create( animate1,NULL);
 
 	CCAnimation * animation2 = CCAnimation::createWithSpriteFrames(animFrames2, 0.1f);
-    CCAnimate *animate2 = CCAnimate::create(animation2);
-    CCActionInterval* seq2 = CCSequence::create( animate2,NULL);
+	CCAnimate *animate2 = CCAnimate::create(animation2);
+	CCActionInterval* seq2 = CCSequence::create( animate2,NULL);
 
 	CCAnimation* animation3 = CCAnimation::createWithSpriteFrames(animFrames3,0.1f);
 	CCAnimate *animate3 = CCAnimate::create(animation3);
@@ -630,8 +767,8 @@ void GameScene::charInit()
 	jump2act = CCRepeatForever::create(seq2);
 	deadact = CCRepeat::create(animate3,1);
 	//
-    // Animation using Sprite BatchNode
-    //
+	// Animation using Sprite BatchNode
+	//
 	//m_character->runAction(runact);
 
 	/*
@@ -642,9 +779,9 @@ void GameScene::charInit()
 	m_character->setPosition(ccp(100,200));
 	*/
 	g_char = new Character(m_character);
-				
+
 	CCPoint char_P = m_character->getPosition();
-	
+
 	GridX = char_P.x/20+2;
 
 
@@ -652,9 +789,9 @@ void GameScene::charInit()
 
 void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 {
-	
-	
-	CCTMXObjectGroup * group = map->objectGroupNamed("coin");
+
+
+	CCTMXObjectGroup * group = map->objectGroupNamed("coin_bronze");
 
 	if(group !=NULL)
 	{
@@ -667,14 +804,11 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		{
 			dict = (CCDictionary*)pObj;
 
-			
-
-
-			CCSprite* tempitem = CCSprite::create("130707_coin3.png");
+			CCSprite* tempitem = CCSprite::create("130710_coin_bronze.png");
 			tempitem->setAnchorPoint(ccp(0,0));
 			tempitem->setPosition(ccp( ((CCString*)dict->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict->objectForKey("y"))->floatValue() ));
 			this->addChild(tempitem,2);
-			g_itemlist.push_back(tempitem);
+			g_coin_bronze.push_back(tempitem);
 
 			if(!dict)
 			{
@@ -682,8 +816,8 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 			}
 		}
 	}
-	
-	CCTMXObjectGroup * group2 = map->objectGroupNamed("mob1");
+
+	CCTMXObjectGroup * group2 = map->objectGroupNamed("coin_silver");
 
 	if(group2 !=NULL)
 	{
@@ -696,11 +830,11 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		{
 			dict2 = (CCDictionary*)pObj2;
 
-			CCSprite* tempmob = CCSprite::create("object1_edit.png");
-			tempmob->setAnchorPoint(ccp(0,0));
-			tempmob->setPosition(ccp( ((CCString*)dict2->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict2->objectForKey("y"))->floatValue() ));
-			this->addChild(tempmob,2);
-			g_moblist.push_back(tempmob);
+			CCSprite* tempitem = CCSprite::create("130710_coin_silver.png");
+			tempitem->setAnchorPoint(ccp(0,0));
+			tempitem->setPosition(ccp( ((CCString*)dict2->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict2->objectForKey("y"))->floatValue() ));
+			this->addChild(tempitem,2);
+			g_coin_silver.push_back(tempitem);
 
 			if(!dict2)
 			{
@@ -709,8 +843,7 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		}
 	}
 
-		
-	CCTMXObjectGroup * group3 = map->objectGroupNamed("mob2");
+	CCTMXObjectGroup * group3 = map->objectGroupNamed("coin_gold");
 
 	if(group3 !=NULL)
 	{
@@ -723,11 +856,12 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		{
 			dict3 = (CCDictionary*)pObj3;
 
-			CCSprite* tempmob = CCSprite::create("object2_edit.png");
-			tempmob->setAnchorPoint(ccp(0,0));
-			tempmob->setPosition(ccp( ((CCString*)dict3->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict3->objectForKey("y"))->floatValue() ));
-			this->addChild(tempmob,2);
-			g_moblist2.push_back(tempmob);
+
+			CCSprite* tempitem = CCSprite::create("130710_coin_gold.png");
+			tempitem->setAnchorPoint(ccp(0,0));
+			tempitem->setPosition(ccp( ((CCString*)dict3->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict3->objectForKey("y"))->floatValue() ));
+			this->addChild(tempitem,2);
+			g_coin_gold.push_back(tempitem);
 
 			if(!dict3)
 			{
@@ -737,7 +871,7 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 	}
 
 
-	CCTMXObjectGroup * group4 = map->objectGroupNamed("object");
+	CCTMXObjectGroup * group4 = map->objectGroupNamed("mob1");
 
 	if(group4 !=NULL)
 	{
@@ -750,11 +884,11 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		{
 			dict4 = (CCDictionary*)pObj4;
 
-			CCSprite* tempobject = CCSprite::create("130710_4.png");
-			tempobject->setAnchorPoint(ccp(0,0));
-			tempobject->setPosition(ccp( ((CCString*)dict4->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict4->objectForKey("y"))->floatValue() ));
-			this->addChild(tempobject,2);
-			g_object.push_back(tempobject);
+			CCSprite* tempmob = CCSprite::create("object1_edit.png");
+			tempmob->setAnchorPoint(ccp(0,0));
+			tempmob->setPosition(ccp( ((CCString*)dict4->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict4->objectForKey("y"))->floatValue() ));
+			this->addChild(tempmob,2);
+			g_moblist.push_back(tempmob);
 
 			if(!dict4)
 			{
@@ -763,149 +897,237 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		}
 	}
 
-	CCTMXLayer* layer1 = map->layerNamed("floor");
-	
-	if(layer1 != NULL)
+
+	CCTMXObjectGroup * group5 = map->objectGroupNamed("mob2");
+
+	if(group3 !=NULL)
 	{
+		CCArray* objects5 = group5->getObjects();
 
-		for( unsigned int x=0; x <7500/20; x++ )
+		CCDictionary* dict5 = NULL;
+		CCObject* pObj5 = NULL;
+
+		CCARRAY_FOREACH(objects5,pObj5)
 		{
-			
-			for( unsigned int y=0; y <720/20; y++ ) 
-			{
-							
-			
-				unsigned int gid = layer1->tileGIDAt(ccp(x,y));
-			
-							
-				if( gid !=0 ) 
-				{
-					g_floor.push_back(ccp(x+(float)7500*i/20,720/20-y));
-				}
-			}
-		}        
+			dict5 = (CCDictionary*)pObj5;
 
+			CCSprite* tempmob = CCSprite::create("object2_edit.png");
+			tempmob->setAnchorPoint(ccp(0,0));
+			tempmob->setPosition(ccp( ((CCString*)dict5->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict5->objectForKey("y"))->floatValue() ));
+			this->addChild(tempmob,2);
+			g_moblist2.push_back(tempmob);
+
+			if(!dict5)
+			{
+				break;
+			}
+		}
 	}
 
 
-	/*
-	CCTMXLayer* layer2 = map->layerNamed("coin");
-	
+	CCTMXObjectGroup * group6 = map->objectGroupNamed("object");
 
-	if(layer2 != NULL)
+	if(group6 !=NULL)
 	{
+		CCArray* objects6 = group6->getObjects();
 
+		CCDictionary* dict6 = NULL;
+		CCObject* pObj6 = NULL;
 
-		for( unsigned int x=0; x <7500/20; x++ )
+		CCARRAY_FOREACH(objects6,pObj6)
 		{
-			
-			for( unsigned int y=0; y <720/20; y++ ) 
+			dict6 = (CCDictionary*)pObj6;
+
+			CCSprite* tempobject = CCSprite::create("130710_4.png");
+			tempobject->setAnchorPoint(ccp(0,0));
+			tempobject->setPosition(ccp( ((CCString*)dict6->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict6->objectForKey("y"))->floatValue() ));
+			this->addChild(tempobject,2);
+			g_object.push_back(tempobject);
+
+			if(!dict6)
 			{
-							
-			
-				unsigned int gid = layer2->tileGIDAt(ccp(x,y));
-							
-							
-				if( gid != 0) 
-				{
-					CCSprite* tempitem = CCSprite::create("130707_coin3.png");
-					tempitem->setAnchorPoint(ccp(0,0));
-					tempitem->setPosition(ccp(x*20+(float)7500*i,(720/20-y)*20));
-					this->addChild(tempitem,2);
-					g_itemlist.push_back(tempitem);
-				}
+				break;
 			}
-		}        
-	
+		}
 	}
 
-	*/
-	/*
-	CCTMXLayer* layer3 = map->layerNamed("mob1");
-	
-	if(layer3 != NULL)
-	{
 
-		for( unsigned int x=0; x <7500/20; x++ )
+
+	CCTMXObjectGroup * group7 = map->objectGroupNamed("floor");
+
+	if(group7 !=NULL)
+	{
+		CCArray* objects7 = group7->getObjects();
+
+		CCDictionary* dict7 = NULL;
+		CCObject* pObj7 = NULL;
+
+		CCARRAY_FOREACH(objects7,pObj7)
 		{
-			
-			for( unsigned int y=0; y <720/20; y++ ) 
+			dict7 = (CCDictionary*)pObj7;
+			g_floor.push_back(ccp( ((CCString*)dict7->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict7->objectForKey("y"))->floatValue() ));
+			if(!dict7)
 			{
-							
-			
-				unsigned int gid = layer3->tileGIDAt(ccp(x,y));
-							
-							
-				if( gid !=0 ) 
-				{
-					CCSprite* tempmob = CCSprite::create("object1_edit.png");
-					tempmob->setAnchorPoint(ccp(0,0));
-					tempmob->setPosition(ccp(x*20+(float)7500*i,(720/20-y)*20));
-					this->addChild(tempmob,2);
-					g_moblist.push_back(tempmob);
-				}
+				break;
 			}
-		}        
-
+		}
 	}
-	CCTMXLayer* layer4 = map->layerNamed("mob2");
-	
-	if(layer4 != NULL)
+	CCTMXObjectGroup * group8 = map->objectGroupNamed("death_block");
+
+	if(group8 !=NULL)
 	{
+		CCArray* objects8 = group8->getObjects();
+
+		CCDictionary* dict8 = NULL;
+		CCObject* pObj8 = NULL;
+
+		CCARRAY_FOREACH(objects8,pObj8)
+		{
+			dict8 = (CCDictionary*)pObj8;
+			g_death_block.push_back(ccp( ((CCString*)dict8->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict8->objectForKey("y"))->floatValue() ));
+			if(!dict8)
+			{
+				break;
+			}
+		}
+	}
+
+	CCTMXObjectGroup * group9 = map->objectGroupNamed("boss");
+
+	if(group9 !=NULL)
+	{
+		CCArray* objects9 = group9->getObjects();
+
+		CCDictionary* dict9 = NULL;
+		CCObject* pObj9 = NULL;
+
+		CCARRAY_FOREACH(objects9,pObj9)
+		{
+			dict9 = (CCDictionary*)pObj9;
+
+			g_boss = CCSprite::create("Ob_stage1_object_boss.png.png");
+			g_boss->setAnchorPoint(ccp(0,0));
+			g_boss->setPosition(ccp( ((CCString*)dict9->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict9->objectForKey("y"))->floatValue() ));
+			this->addChild(g_boss,2);
+
+			if(!dict9)
+			{
+				break;
+			}
+		}
+	}
+
+	
+	CCTMXObjectGroup * group10 = map->objectGroupNamed("item_huge");
+
+	if(group10 !=NULL)
+	{
+		CCArray* objects10 = group10->getObjects();
+
+		CCDictionary* dict10 = NULL;
+		CCObject* pObj10 = NULL;
+
+		CCARRAY_FOREACH(objects10,pObj10)
+		{
+			dict10 = (CCDictionary*)pObj10;
+
 		
-	
-		for( unsigned int x=0; x <7500/20; x++ )
-		{
-			
-			for( unsigned int y=0; y <720/20; y++ ) 
-			{
-							
-			
-				unsigned int gid = layer4->tileGIDAt(ccp(x,y));
-							
-							
-				if( gid !=0 ) 
-				{
-					CCSprite* tempmob = CCSprite::create("object2_edit.png");
-					tempmob->setAnchorPoint(ccp(0,0));
-					tempmob->setPosition(ccp(x*20+(float)7500*i,(720/20-y)*20));
-					this->addChild(tempmob,2);
-					g_moblist2.push_back(tempmob);
-				}
-			}
-		}     
-	
-	}
-	CCTMXLayer* layer5 = map->layerNamed("object");
-	
+			CCSprite* tempobject = CCSprite::create("Ig_item_huge.png");
+			tempobject->setAnchorPoint(ccp(0,0));
+			tempobject->setPosition(ccp( ((CCString*)dict10->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict10->objectForKey("y"))->floatValue() ));
+			this->addChild(tempobject,2);
+			g_huge_item.push_back(tempobject);
 
-	if(layer5 != NULL)
+			if(!dict10)
+			{
+				break;
+			}
+		}
+	}
+
+	
+	CCTMXObjectGroup * group11 = map->objectGroupNamed("item_coin");
+
+	if(group11 !=NULL)
 	{
-	
-		for( unsigned int x=0; x <7500/20; x++ )
+		CCArray* objects11 = group11->getObjects();
+
+		CCDictionary* dict11 = NULL;
+		CCObject* pObj11 = NULL;
+
+		CCARRAY_FOREACH(objects11,pObj11)
 		{
-			
-			for( unsigned int y=0; y <720/20; y++ ) 
-			{
-							
-			
-				unsigned int gid = layer5->tileGIDAt(ccp(x,y));
-							
-							
-				if( gid !=0 ) 
-				{
-					CCSprite* tempmob = CCSprite::create("130710_4.png");
-					tempmob->setAnchorPoint(ccp(0,0));
-					tempmob->setPosition(ccp(x*20+(float)7500*i,(720/20-y)*20));
-					this->addChild(tempmob,2);
-					g_object.push_back(tempmob);
-				}
-			}
-		}        
+			dict11 = (CCDictionary*)pObj11;
+
 		
+			CCSprite* tempobject = CCSprite::create("Ig_item_coin.png");
+			tempobject->setAnchorPoint(ccp(0,0));
+			tempobject->setPosition(ccp( ((CCString*)dict11->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict11->objectForKey("y"))->floatValue() ));
+			this->addChild(tempobject,2);
+			g_coin_item.push_back(tempobject);
+
+			if(!dict11)
+			{
+				break;
+			}
+		}
 	}
 
-	*/
+	
+	CCTMXObjectGroup * group12 = map->objectGroupNamed("item_run");
+
+	if(group12 !=NULL)
+	{
+		CCArray* objects12 = group12->getObjects();
+
+		CCDictionary* dict12 = NULL;
+		CCObject* pObj12 = NULL;
+
+		CCARRAY_FOREACH(objects12,pObj12)
+		{
+			dict12 = (CCDictionary*)pObj12;
+
+			
+			CCSprite* tempobject = CCSprite::create("Ig_item_run.png");
+			tempobject->setAnchorPoint(ccp(0,0));
+			tempobject->setPosition(ccp( ((CCString*)dict12->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict12->objectForKey("y"))->floatValue() ));
+			this->addChild(tempobject,2);
+			g_run_item.push_back(tempobject);
+			if(!dict12)
+			{
+				break;
+			}
+		}
+	}
+
+	
+	CCTMXObjectGroup * group13 = map->objectGroupNamed("item_magnet");
+
+	if(group13 !=NULL)
+	{
+		CCArray* objects13 = group13->getObjects();
+
+		CCDictionary* dict13 = NULL;
+		CCObject* pObj13 = NULL;
+
+		CCARRAY_FOREACH(objects13,pObj13)
+		{
+			dict13 = (CCDictionary*)pObj13;
+
+			CCSprite* tempobject = CCSprite::create("Ig_item_magnet.png");
+			tempobject->setAnchorPoint(ccp(0,0));
+			tempobject->setPosition(ccp( ((CCString*)dict13->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict13->objectForKey("y"))->floatValue() ));
+			this->addChild(tempobject,2);
+			g_magnet_item.push_back(tempobject);
+
+			if(!dict13)
+			{
+				break;
+			}
+		}
+	}
+
+
 }
 
 void GameScene::magneticEffect()
@@ -916,12 +1138,12 @@ void GameScene::magneticEffect()
 	CCSprite* temp;
 	float multyX=0;
 	float multyY=0;
-	
-	for(g_magenetic_item_iterator = g_magenetic_item.begin();g_magenetic_item_iterator != g_magenetic_item.end();)
+
+	for(g_magnet_item_iterator = g_magnet_item.begin();g_magnet_item_iterator != g_magnet_item.end();)
 	{
 		bool bDeleted = false;
 
-		temp = *(g_magenetic_item_iterator);
+		temp = *(g_magnet_item_iterator);
 
 		char_P = m_character->getPosition();
 		item_P = temp->getPosition();
@@ -936,14 +1158,14 @@ void GameScene::magneticEffect()
 
 		if(!bDeleted)
 		{
-			g_magenetic_item_iterator++;
+			g_magnet_item_iterator++;
 		}
 
 	}
 
 	if(g_checkmagnetic == true)
 	{
-		
+
 
 		if( (g_checktime - g_loadtime) == 3.3)
 		{
@@ -954,9 +1176,9 @@ void GameScene::magneticEffect()
 		for(g_item_iterator = g_itemlist.begin(); g_item_iterator != g_itemlist.end(); )
 		{
 			bool bDeleted2 = false;
-		
+
 			temp = *(g_item_iterator);
-		
+
 			char_P = m_character->getPosition();
 			item_P = temp->getPosition();
 
@@ -977,7 +1199,7 @@ void GameScene::magneticEffect()
 			{
 				g_item_iterator++;
 			}
-	
+
 		}
 
 	}
@@ -988,21 +1210,49 @@ int GameScene::checkTime()
 	g_temptime++;
 
 	return g_temptime;
-	
+
 }
 
 void GameScene::scoreUpdate()
 {
+	pNum->cleanup();
+	g_score = g_score_item*10 + g_score_mob1*100 + g_score_mob2*200;
+	pNum->setString(CCString::createWithFormat("%d", g_score)->m_sString.c_str());
+
 
 }
 
 void GameScene::scoreInit()
 {
+	g_score=0;
+	g_score_item=0;
+	g_score_mob1=0;
+	g_score_mob2=0;
+	g_score_run=0;
 
+
+	CCSprite* score_name= CCSprite::create("130827_score.png");
+	score_name->setAnchorPoint(ccp(0,0));
+	score_name->setPosition(ccp(0,650));
+	this->addChild(score_name,3);
+
+	CCSprite* score_bar = CCSprite::create("130827_score2.png");
+	score_bar->setAnchorPoint(ccp(0,0));
+	score_bar->setPosition(ccp(20,605));
+	this->addChild(score_bar,2);
+
+	pNum = CCLabelAtlas::create("0123456789", "number_sprite.png", 31, 40, '0');
+	pNum->setAnchorPoint(ccp(0,0));
+	pNum->setPosition(ccp(94,625));
+	pNum->setString(CCString::createWithFormat("%d", g_score)->m_sString.c_str());
+
+	this->addChild(pNum,3);
 }
 
 void GameScene::gameOver()
 {
+	g_char->runDeadAnimation();
+
 	CCSprite* gameover = CCSprite::create("fail.png");
 	gameover->setAnchorPoint(ccp(0,0));
 	gameover->setPosition(ccp(0,0));
@@ -1059,4 +1309,36 @@ void GameScene::pause()
 	bgm->setAnchorPoint(ccp(0,0));
 	bgm->setPosition(ccp(895,65));
 	this->addChild(bgm,7,tag_bgmControl);
+}
+
+void GameScene::endStage()
+{
+	m_character->stopAllActions();
+	this->removeChild(m_character);
+
+	CCSprite* missionComplete = CCSprite::create("success.png");
+	missionComplete->setAnchorPoint(ccp(0,0));
+	missionComplete->setPosition(ccp(0,0));
+	this->addChild(missionComplete,5);
+
+	CCSprite* mainmenu= CCSprite::create("gotomenu.png");
+	mainmenu->setAnchorPoint(ccp(0,0));
+	mainmenu->setPosition(ccp(895,228));
+	this->addChild(mainmenu,6);
+
+	CCSprite* next= CCSprite::create("next.png");
+	next->setAnchorPoint(ccp(0,0));
+	next->setPosition(ccp(895,109));
+	this->addChild(next,6);
+
+	CCLabelAtlas* lastScore =CCLabelAtlas::create("0123456789", "number_sprite.png", 31, 40, '0');;
+	lastScore->setAnchorPoint(ccp(0,0));
+	lastScore->setPosition(ccp(1120,349));
+	lastScore->setString(CCString::createWithFormat("%d", g_score)->m_sString.c_str());
+	this->addChild(lastScore,7);
+	g_gameSuccess = true;
+
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+
+	this->unschedule(schedule_selector(GameScene::update));
 }

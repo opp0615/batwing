@@ -5,12 +5,12 @@
 #include "MainmenuScene.h"
 using namespace cocos2d;
 
-class StrategyOfficeScene : public cocos2d::CCLayerColor
+class StrategyOfficeScene : public CCLayerColor
 {
 public:
 	virtual bool init();
 
-	static cocos2d::CCScene* scene();
+	static CCScene* scene();
 
 	void menuCloseCallback(CCObject* pSender);
 

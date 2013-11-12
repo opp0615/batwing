@@ -6,7 +6,6 @@
 #include "Character.h"
 #include "Map.h"
 #include "itemManager.h"
-#include "Score.h"
 #include "MainmenuScene.h"
 
 #include <list>
@@ -26,18 +25,21 @@ private:
 	CCSprite* nowpositionpoint ;
 	int banimation;
 
-	bool g_gameOverCheck;
+	CCLabelAtlas *pNum;
 
+	bool g_gameOverCheck;
+	bool g_gameSuccess;
 	bool g_pauseClick;
 	
 	float g_checktime;
 	int g_temptime;
 	float g_loadtime;
 
-	int g_scroe;
-	int g_scroe_item;
-	int g_scroe_mob1;
-	int g_scroe_run;
+	int g_score;
+	int g_score_item;
+	int g_score_mob1;
+	int g_score_mob2;
+	int g_score_run;
 
 	bool g_checkmagnetic;
 
@@ -52,9 +54,23 @@ private:
 	int pauseCheckAni;
 
 	int GridX,GridY;
+	CCPoint g_virtual_char;
 
 	std::list<CCSprite*> g_itemlist;
 	std::list<CCSprite*>::iterator g_item_iterator;
+
+	//coin
+
+	std::list<CCSprite*> g_coin_bronze;
+	std::list<CCSprite*>::iterator g_coin_bronze_iterator;
+
+	std::list<CCSprite*> g_coin_silver;
+	std::list<CCSprite*>::iterator g_coin_silver_iterator;
+
+	std::list<CCSprite*> g_coin_gold;
+	std::list<CCSprite*>::iterator g_coin_gold_iterator;
+
+	//object
 
 	std::list<CCSprite*> g_moblist;
 	std::list<CCSprite*>::iterator g_mob_iterator;
@@ -65,11 +81,29 @@ private:
 	std::list<CCSprite*> g_object;
 	std::list<CCSprite*>::iterator g_object_iterator;
 
-	std::list<CCSprite*> g_magenetic_item;
-	std::list<CCSprite*>::iterator g_magenetic_item_iterator;
+
+	//item
+	std::list<CCSprite*> g_huge_item;
+	std::list<CCSprite*>::iterator g_huge_item_iterator;
+
+	std::list<CCSprite*> g_run_item;
+	std::list<CCSprite*>::iterator g_run_item_iterator;
+
+	std::list<CCSprite*> g_coin_item;
+	std::list<CCSprite*>::iterator g_coin_item_iterator;
+
+	std::list<CCSprite*> g_magnet_item;
+	std::list<CCSprite*>::iterator g_magnet_item_iterator;
+
+	CCSprite* g_boss;
+
+	//floorcheck
 
 	std::list<CCPoint> g_floor;
 	std::list<CCPoint>::iterator g_floor_iterator;
+
+	std::list<CCPoint> g_death_block;
+	std::list<CCPoint>::iterator g_death_block_iterator;
 
 public:
 
@@ -122,6 +156,8 @@ public:
 
 	void scoreUpdate();
 	void scoreInit();
+
+	void endStage();
     // implement the "static node()" method manually
     CREATE_FUNC(GameScene);
 };
