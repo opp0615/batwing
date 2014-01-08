@@ -1,6 +1,6 @@
 #include "Character.h"
 
-Character::Character(CCSprite* g_character)
+Character::Character(CCSprite* g_character,int width,int height)
 {
 	m_character = g_character;
 	gravity = 0.7f;
@@ -13,6 +13,9 @@ Character::Character(CCSprite* g_character)
 	c_height = 160;
 	c_checkanimation = 0;
 	animationInit();
+
+	m_characterWidth = width;
+	m_characterHeight = height;
 }
 
 void Character::Accel()
@@ -122,103 +125,182 @@ int Character::getCharSpeed()
 
 void Character::animationInit()
 {
-	 
-    CCTexture2D *texture = CCTextureCache::sharedTextureCache()->addImage("main character.png");
-	 
-	    // manually add frames to the frame cache
-    CCSpriteFrame *frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
-    CCSpriteFrame *frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
-	CCSpriteFrame *frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*2,0,140,160));
-    CCSpriteFrame *frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*3,0,140,160));
-	CCSpriteFrame *frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*4,0,140,160));
-    CCSpriteFrame *frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*5,0,140,160));
-	CCSpriteFrame *frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*6,0,140,160));
-    CCSpriteFrame *frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*7,0,140,160));
-	CCSpriteFrame *frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*8,0,140,160));
-	CCSpriteFrame *frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*9,0,140,160));
-	CCSpriteFrame *frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*10,0,140,160));
+	CCTexture2D *texture;
+	CCSpriteFrame *frame0 ;
+	CCSpriteFrame *frame1 ;
+	CCSpriteFrame *frame2 ;
+	CCSpriteFrame *frame3 ;
+	CCSpriteFrame *frame4 ;
+	CCSpriteFrame *frame5 ;
+	CCSpriteFrame *frame6 ;
+	CCSpriteFrame *frame7 ;
+	CCSpriteFrame *frame8 ;
+	CCSpriteFrame *frame9 ;
+	CCSpriteFrame *frame10;
+	
+	switch(global_charSet)
+	{
+
+	case 1:
+		texture = CCTextureCache::sharedTextureCache()->addImage("Char_Ring.png");
+
+		frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(0,0,130,160));
+		frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140,0,140,160));
+		frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(280,0,140,160));
+		frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(420,0,140,160));
+
+		frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(560,0,185,160));
+		frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(745,0,185,160));
+		frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(930,0,185,160));
+		frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(1115,0,185,160));
+		frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(1300,0,185,160));
+
+		frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(1486,0,185,160));
+		frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(1670,0,185,160));
+
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	default:
+		texture = CCTextureCache::sharedTextureCache()->addImage("main character.png");
+		// manually add frames to the frame cache
+		frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
+		frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
+		frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*2,0,140,160));
+		frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*3,0,140,160));
+		frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*4,0,140,160));
+		frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*5,0,140,160));
+		frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*6,0,140,160));
+		frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*7,0,140,160));
+		frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*8,0,140,160));
+		frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*9,0,140,160));
+		frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*10,0,140,160));
+
+		break;
+	}
+	
+
+		CCArray* animFrames0 = CCArray::createWithCapacity(6);
+		animFrames0->addObject(frame0);
+		animFrames0->addObject(frame1);
+
+		CCArray* animFrames1 = CCArray::createWithCapacity(6);
+		animFrames1->addObject(frame2);
+
+		CCArray* animFrames2 = CCArray::createWithCapacity(6);
+		animFrames2->addObject(frame3);
+		animFrames2->addObject(frame4);
+		animFrames2->addObject(frame5);
+		animFrames2->addObject(frame6);
+		animFrames2->addObject(frame7);
+		animFrames2->addObject(frame8);
 
 
-    CCArray* animFrames0 = CCArray::createWithCapacity(2);
-    animFrames0->addObject(frame0);
-    animFrames0->addObject(frame1);
-   
-	CCArray* animFrames1 = CCArray::createWithCapacity(1);
-	animFrames1->addObject(frame2);
+		CCArray* animFrames3 = CCArray::createWithCapacity(2);
+		animFrames3 ->addObject(frame9);
+		animFrames3 ->addObject(frame10);
 
-	CCArray* animFrames2 = CCArray::createWithCapacity(6);
-	animFrames2->addObject(frame3);
-	animFrames2->addObject(frame4);
-	animFrames2->addObject(frame5);
-	animFrames2->addObject(frame6);
-	animFrames2->addObject(frame7);
-	animFrames2->addObject(frame8);
+		CCAnimation * animation0 = CCAnimation::createWithSpriteFrames(animFrames0, 0.1f);
+		CCAnimate *animate0 = CCAnimate::create(animation0);
+		CCActionInterval* seq0 = CCSequence::create( animate0,NULL);
 
+		CCAnimation *  animation1 = CCAnimation::createWithSpriteFrames(animFrames1, 0.1f);
+		CCAnimate *animate1 = CCAnimate::create(animation1);
+		CCActionInterval* seq1 = CCSequence::create( animate1,NULL);
 
-	CCArray* animFrames3 = CCArray::createWithCapacity(2);
-	animFrames3 ->addObject(frame9);
-	animFrames3 ->addObject(frame10);
+		CCAnimation * animation2 = CCAnimation::createWithSpriteFrames(animFrames2, 0.1f);
+		CCAnimate *animate2 = CCAnimate::create(animation2);
+		CCActionInterval* seq2 = CCSequence::create( animate2,NULL);
 
+		CCAnimation* animation3 = CCAnimation::createWithSpriteFrames(animFrames3,0.1f);
+		CCAnimate *animate3 = CCAnimate::create(animation3);
 
-    CCAnimation * animation0 = CCAnimation::createWithSpriteFrames(animFrames0, 0.1f);
-    CCAnimate *animate0 = CCAnimate::create(animation0);
-    c_seq0 = CCSequence::create( animate0,NULL);
-
-	CCAnimation *  animation1 = CCAnimation::createWithSpriteFrames(animFrames1, 0.1f);
-    CCAnimate *animate1 = CCAnimate::create(animation1);
-    c_seq1 = CCSequence::create( animate1,NULL);
-
-	CCAnimation * animation2 = CCAnimation::createWithSpriteFrames(animFrames2, 0.1f);
-    CCAnimate *animate2 = CCAnimate::create(animation2);
-    c_seq2 = CCSequence::create( animate2,NULL);
-
-
-	CCAnimation* animation3 = CCAnimation::createWithSpriteFrames(animFrames3,0.1f);
-	c_animate3 = CCAnimate::create(animation3);
-
-	runact   = CCRepeatForever::create(c_seq0);
-	jump1act = CCRepeatForever::create(c_seq1);
-	jump2act = CCRepeatForever::create(c_seq2);
-	deadact = CCRepeat::create(c_animate3,1);
+		runact   = CCRepeatForever::create(seq0);
+		jump1act = CCRepeatForever::create(seq1);
+		jump2act = CCRepeatForever::create(seq2);
+		deadact = CCRepeat::create(animate3,1);
 }
 
 void Character::animationCreate()
-{
-	 CCTexture2D *texture = CCTextureCache::sharedTextureCache()->addImage("main character.png");
-	 
-	    // manually add frames to the frame cache
-    CCSpriteFrame *frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
-    CCSpriteFrame *frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
-	CCSpriteFrame *frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*2,0,140,160));
-    CCSpriteFrame *frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*3,0,140,160));
-	CCSpriteFrame *frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*4,0,140,160));
-    CCSpriteFrame *frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*5,0,140,160));
-	CCSpriteFrame *frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*6,0,140,160));
-    CCSpriteFrame *frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*7,0,140,160));
-	CCSpriteFrame *frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*8,0,140,160));
-	CCSpriteFrame *frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*9,0,140,160));
-	CCSpriteFrame *frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*10,0,140,160));
+{	CCTexture2D *texture;
+	CCSpriteFrame *frame0 ;
+	CCSpriteFrame *frame1 ;
+	CCSpriteFrame *frame2 ;
+	CCSpriteFrame *frame3 ;
+	CCSpriteFrame *frame4 ;
+	CCSpriteFrame *frame5 ;
+	CCSpriteFrame *frame6 ;
+	CCSpriteFrame *frame7 ;
+	CCSpriteFrame *frame8 ;
+	CCSpriteFrame *frame9 ;
+	CCSpriteFrame *frame10;
+	
+	switch(global_charSet)
+	{
+
+	case 1:
+		texture = CCTextureCache::sharedTextureCache()->addImage("Char_Ring.png");
+
+		frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(0,0,130,160));
+		frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140,0,140,160));
+		frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(280,0,140,160));
+		frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(420,0,140,160));
+
+		frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(560,0,185,160));
+		frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(745,0,185,160));
+		frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(930,0,185,160));
+		frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(1115,0,185,160));
+		frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(1300,0,185,160));
+
+		frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(1486,0,185,160));
+		frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(1670,0,185,160));
+
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	default:
+		texture = CCTextureCache::sharedTextureCache()->addImage("main character.png");
+		// manually add frames to the frame cache
+		frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
+		frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
+		frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*2,0,140,160));
+		frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*3,0,140,160));
+		frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*4,0,140,160));
+		frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*5,0,140,160));
+		frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*6,0,140,160));
+		frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*7,0,140,160));
+		frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*8,0,140,160));
+		frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*9,0,140,160));
+		frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*10,0,140,160));
+
+		break;
+	}
+	
+
+		CCArray* animFrames0 = CCArray::createWithCapacity(6);
+		animFrames0->addObject(frame0);
+		animFrames0->addObject(frame1);
+
+		CCArray* animFrames1 = CCArray::createWithCapacity(6);
+		animFrames1->addObject(frame2);
+
+		CCArray* animFrames2 = CCArray::createWithCapacity(6);
+		animFrames2->addObject(frame3);
+		animFrames2->addObject(frame4);
+		animFrames2->addObject(frame5);
+		animFrames2->addObject(frame6);
+		animFrames2->addObject(frame7);
+		animFrames2->addObject(frame8);
 
 
-    CCArray* animFrames0 = CCArray::createWithCapacity(2);
-    animFrames0->addObject(frame0);
-    animFrames0->addObject(frame1);
-   
-	CCArray* animFrames1 = CCArray::createWithCapacity(1);
-	animFrames1->addObject(frame2);
+		CCArray* animFrames3 = CCArray::createWithCapacity(2);
+		animFrames3 ->addObject(frame9);
+		animFrames3 ->addObject(frame10);
 
-	CCArray* animFrames2 = CCArray::createWithCapacity(6);
-	animFrames2->addObject(frame3);
-	animFrames2->addObject(frame4);
-	animFrames2->addObject(frame5);
-	animFrames2->addObject(frame6);
-	animFrames2->addObject(frame7);
-	animFrames2->addObject(frame8);
-
-
-	CCArray* animFrames3 = CCArray::createWithCapacity(2);
-	animFrames3 ->addObject(frame9);
-	animFrames3 ->addObject(frame10);
 
 
     CCAnimation * animation0 = CCAnimation::createWithSpriteFrames(animFrames0, 0.1f);

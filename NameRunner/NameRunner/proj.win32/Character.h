@@ -1,15 +1,14 @@
 #pragma once
 
 #include "cocos2d.h"
-
+#include "global.h"
 using namespace cocos2d;
 
 class Character {
 private:
 	CCPoint char_P;
 	CCSprite* m_character;
-	
-
+	int m_characterWidth,m_characterHeight;
 	float count;
 	float v;
 	float a;
@@ -38,7 +37,7 @@ private:
 	int floor_check;
 
 public:
-	Character(CCSprite* g_character);
+	Character(CCSprite* g_character,int width,int height);
 	//bool getMod();
 	//void CheckCollision();
 	//void getcollisionArray(int getcollision[][480]);

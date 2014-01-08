@@ -3,6 +3,7 @@
 #include "cocos2d.h"
 #include "SimpleAudioEngine.h"
 
+#include "global.h"
 #include "GameScene.h"
 #include "MainmenuScene.h"
 #include "OptionScene.h"

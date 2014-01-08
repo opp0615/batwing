@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 
+#include "global.h"
 #include "Character.h"
 #include "Map.h"
 #include "itemManager.h"
@@ -12,6 +13,8 @@
 
 #include "SimpleAudioEngine.h"
 using namespace cocos2d;
+
+
 
 class GameScene : public cocos2d::CCLayerColor
 {
@@ -49,7 +52,7 @@ private:
 
 	CCAction* deadact;
 
-	CCTMXTiledMap* map_level[4];
+	CCTMXTiledMap* map_level[5];
 
 	int pauseCheckAni;
 

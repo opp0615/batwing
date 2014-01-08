@@ -29,6 +29,7 @@
 #define tag_option2 22
 #define tage_rank2 23
 
+
 CCScene* MainmenuScene::scene()
 {
 	CCScene * scene = NULL;

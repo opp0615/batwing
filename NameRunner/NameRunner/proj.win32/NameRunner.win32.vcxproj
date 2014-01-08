@@ -130,8 +130,11 @@
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\GameScene.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="CharacterSelectScene.h" />
     <ClInclude Include="GameSelectScene.h" />
+    <ClInclude Include="global.h" />
     <ClInclude Include="itemManager.h" />
+    <ClInclude Include="ItemSelectScene.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="MainmenuScene.h" />
     <ClInclude Include="Map.h" />
@@ -140,13 +143,17 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="StrategyOfficeScene.h" />
+    <ClInclude Include="temp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="CharacterSelectScene.cpp" />
     <ClCompile Include="GameSelectScene.cpp" />
+    <ClCompile Include="global.cpp" />
     <ClCompile Include="itemManager.cpp" />
+    <ClCompile Include="ItemSelectScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainmenuScene.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -154,6 +161,7 @@
     <ClCompile Include="RankScene.cpp" />
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="StrategyOfficeScene.cpp" />
+    <ClCompile Include="temp.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

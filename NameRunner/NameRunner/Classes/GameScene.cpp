@@ -21,6 +21,7 @@
 #define tag_goToMenu 90
 #define tag_soundControl 91
 #define tag_bgmControl 92
+
 CCScene* GameScene::scene()
 {
 	CCScene * scene = NULL;
@@ -53,6 +54,8 @@ bool GameScene::init()
 		{
 			return false;
 		}
+
+		CCLog("%d",global_charSet);
 
 		game_speed = 10;
 
@@ -175,7 +178,7 @@ void GameScene::collisionCheck()
 
 	//item collision check
 
-	
+
 
 	for(g_coin_bronze_iterator = g_coin_bronze.begin(); g_coin_bronze_iterator != g_coin_bronze.end(); )
 	{
@@ -239,7 +242,6 @@ void GameScene::collisionCheck()
 	}
 
 
-
 	for(g_coin_gold_iterator = g_coin_gold.begin(); g_coin_gold_iterator != g_coin_gold.end(); )
 	{
 		bool bDeleted = false;
@@ -272,15 +274,31 @@ void GameScene::collisionCheck()
 
 
 	//mob collision check
-	CCPoint mob_P;
 
-	mob_P = g_boss->getPosition();
 
-	if(mob_P.x  < char_P.x+character_width && mob_P.x + boss_width > char_P.x && mob_P.y + boss_height >char_P.y &&mob_P.y<char_P.y+character_height)
+	//boss collision
+	if(g_boss != NULL)
 	{
-		this->removeChild(g_boss);
-		endStage();
+
+		CCPoint boss_P =  g_boss->getPosition();
+
+
+		if(g_char->getCharSpeed() < 0 && boss_P.x  < char_P.x+character_width && boss_P.x + boss_width > char_P.x && boss_P.y + boss_height >char_P.y &&boss_P.y + 200<char_P.y+character_height)
+		{
+			g_char->mobjump();
+			this->removeChild(g_boss);
+			g_boss = NULL;
+
+		}
+
+		else if(boss_P.x  < char_P.x+character_width && boss_P.x + boss_width > char_P.x && boss_P.y + boss_height -50 >char_P.y  &&boss_P.y<char_P.y+character_height)
+		{
+			gameOver();
+		}
+
 	}
+
+	CCPoint mob_P;
 
 	for(g_mob_iterator = g_moblist.begin(); g_mob_iterator != g_moblist.end(); )
 	{
@@ -311,7 +329,7 @@ void GameScene::collisionCheck()
 
 			if( char_P.x+character_width- 30  >mob_P.x && char_P.x+ 30< mob_P.x + mob1_width &&char_P.y+ 30 <mob_P.y+mob1_height -30 && char_P.y + character_height-30  > mob_P.y -10)
 			{
-				
+
 				gameOver();
 
 				return ;
@@ -505,7 +523,7 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 
 	else if(g_gameSuccess ==true)
 	{
-		
+
 		if( 895<=location.x && location.x<=895 + 250 && 109<=location.y && location.y<=109+75)
 		{
 			CCScene *pScene = MainmenuScene::scene();
@@ -543,7 +561,7 @@ void GameScene::itemScrolling()
 		temp->setPosition(ccp(item_P.x-game_speed,item_P.y));
 	}
 
-	
+
 	for(g_coin_gold_iterator = g_coin_gold.begin(); g_coin_gold_iterator != g_coin_gold.end(); g_coin_gold_iterator++)
 	{
 		temp = (*g_coin_gold_iterator);
@@ -612,8 +630,12 @@ void GameScene::mobScrolling()
 		mob_P=temp->getPosition();
 		temp->setPosition(ccp(mob_P.x-game_speed,mob_P.y));
 	}
-	mob_P = g_boss->getPosition();
-	g_boss->setPosition(ccp(mob_P.x-game_speed,mob_P.y));
+
+	if(g_boss != NULL)
+	{
+		mob_P = g_boss->getPosition();
+		g_boss->setPosition(ccp(mob_P.x-game_speed,mob_P.y));
+	}
 
 }
 
@@ -634,8 +656,9 @@ void GameScene::mapInit()
 	map_level[1] = CCTMXTiledMap::create("stage1_level2.tmx");
 	map_level[2] = CCTMXTiledMap::create("stage1_level3.tmx");
 	map_level[3] = CCTMXTiledMap::create("stage1_level4.tmx");
+	map_level[4] = CCTMXTiledMap::create("stage1_level5.tmx");
 
-	for(int i=0;i<4;i++)
+	for(int i=0;i<5;i++)
 	{
 		map_level[i]->setAnchorPoint(ccp(0,0));
 		map_level[i]->setPosition(ccp(7500*i,0));
@@ -652,7 +675,7 @@ void GameScene::mapScrolling()
 
 	CCPoint map_P;
 
-	for(int i =0;i<4;i++)
+	for(int i =0;i<5;i++)
 	{
 		map_P = map_level[i]->getPosition();
 		map_level[i]->setPositionX(map_P.x-game_speed);
@@ -689,35 +712,38 @@ void GameScene::floorcheck()
 
 	}
 
+	if(g_virtual_char.x >= 29100)
+	{
+		if(g_boss !=NULL)
+		{
+			gameOver();
+		}
 
+		else
+		{
+			endStage();
+		}
+	}
 
 }
 
 
 void GameScene::charInit()
 {
+	switch (global_charSet)
+	{
+	case 1:
+		m_character = CCSprite::create("Char_Ring.png",CCRect(0,0,140,160));
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	default:
+		m_character = CCSprite::create("main character.png",CCRect(0,0,140,160));
+		break;
+	}
 
-	CCSize s = CCDirector::sharedDirector()->getWinSize();
-
-	CCTexture2D *texture = CCTextureCache::sharedTextureCache()->addImage("main character.png");
-
-
-
-	// manually add frames to the frame cache
-	CCSpriteFrame *frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
-	CCSpriteFrame *frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
-	CCSpriteFrame *frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*2,0,140,160));
-	CCSpriteFrame *frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*3,0,140,160));
-	CCSpriteFrame *frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*4,0,140,160));
-	CCSpriteFrame *frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*5,0,140,160));
-	CCSpriteFrame *frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*6,0,140,160));
-	CCSpriteFrame *frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*7,0,140,160));
-	CCSpriteFrame *frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*8,0,140,160));
-	CCSpriteFrame *frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*9,0,140,160));
-	CCSpriteFrame *frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*10,0,140,160));
-
-
-	m_character = CCSprite::createWithSpriteFrame(frame0);
 
 	m_character->setAnchorPoint(ccp(0,0));
 	m_character->setPosition(ccp(100,120));
@@ -725,60 +751,7 @@ void GameScene::charInit()
 	this->addChild(m_character,3);
 
 
-
-	CCArray* animFrames0 = CCArray::createWithCapacity(6);
-	animFrames0->addObject(frame0);
-	animFrames0->addObject(frame1);
-
-	CCArray* animFrames1 = CCArray::createWithCapacity(6);
-	animFrames1->addObject(frame2);
-
-	CCArray* animFrames2 = CCArray::createWithCapacity(6);
-	animFrames2->addObject(frame3);
-	animFrames2->addObject(frame4);
-	animFrames2->addObject(frame5);
-	animFrames2->addObject(frame6);
-	animFrames2->addObject(frame7);
-	animFrames2->addObject(frame8);
-
-
-
-	CCArray* animFrames3 = CCArray::createWithCapacity(2);
-	animFrames3 ->addObject(frame9);
-	animFrames3 ->addObject(frame10);
-
-	CCAnimation * animation0 = CCAnimation::createWithSpriteFrames(animFrames0, 0.1f);
-	CCAnimate *animate0 = CCAnimate::create(animation0);
-	CCActionInterval* seq0 = CCSequence::create( animate0,NULL);
-
-	CCAnimation *  animation1 = CCAnimation::createWithSpriteFrames(animFrames1, 0.1f);
-	CCAnimate *animate1 = CCAnimate::create(animation1);
-	CCActionInterval* seq1 = CCSequence::create( animate1,NULL);
-
-	CCAnimation * animation2 = CCAnimation::createWithSpriteFrames(animFrames2, 0.1f);
-	CCAnimate *animate2 = CCAnimate::create(animation2);
-	CCActionInterval* seq2 = CCSequence::create( animate2,NULL);
-
-	CCAnimation* animation3 = CCAnimation::createWithSpriteFrames(animFrames3,0.1f);
-	CCAnimate *animate3 = CCAnimate::create(animation3);
-
-	runact   = CCRepeatForever::create(seq0);
-	jump1act = CCRepeatForever::create(seq1);
-	jump2act = CCRepeatForever::create(seq2);
-	deadact = CCRepeat::create(animate3,1);
-	//
-	// Animation using Sprite BatchNode
-	//
-	//m_character->runAction(runact);
-
-	/*
-	m_character = CCSprite::create("main character_edit.png",CCRect(140,0,140,160));
-	this -> addChild(m_character,2);
-
-	m_character->setAnchorPoint(ccp(0,0));
-	m_character->setPosition(ccp(100,200));
-	*/
-	g_char = new Character(m_character);
+	g_char = new Character(m_character,140,160);
 
 	CCPoint char_P = m_character->getPosition();
 
@@ -1017,7 +990,7 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		}
 	}
 
-	
+
 	CCTMXObjectGroup * group10 = map->objectGroupNamed("item_huge");
 
 	if(group10 !=NULL)
@@ -1031,7 +1004,7 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		{
 			dict10 = (CCDictionary*)pObj10;
 
-		
+
 			CCSprite* tempobject = CCSprite::create("Ig_item_huge.png");
 			tempobject->setAnchorPoint(ccp(0,0));
 			tempobject->setPosition(ccp( ((CCString*)dict10->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict10->objectForKey("y"))->floatValue() ));
@@ -1045,7 +1018,7 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		}
 	}
 
-	
+
 	CCTMXObjectGroup * group11 = map->objectGroupNamed("item_coin");
 
 	if(group11 !=NULL)
@@ -1059,7 +1032,7 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		{
 			dict11 = (CCDictionary*)pObj11;
 
-		
+
 			CCSprite* tempobject = CCSprite::create("Ig_item_coin.png");
 			tempobject->setAnchorPoint(ccp(0,0));
 			tempobject->setPosition(ccp( ((CCString*)dict11->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict11->objectForKey("y"))->floatValue() ));
@@ -1073,7 +1046,7 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		}
 	}
 
-	
+
 	CCTMXObjectGroup * group12 = map->objectGroupNamed("item_run");
 
 	if(group12 !=NULL)
@@ -1087,7 +1060,7 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		{
 			dict12 = (CCDictionary*)pObj12;
 
-			
+
 			CCSprite* tempobject = CCSprite::create("Ig_item_run.png");
 			tempobject->setAnchorPoint(ccp(0,0));
 			tempobject->setPosition(ccp( ((CCString*)dict12->objectForKey("x"))->floatValue() + 7500*i, ((CCString*)dict12->objectForKey("y"))->floatValue() ));
@@ -1100,7 +1073,7 @@ void GameScene::mapdataload(CCTMXTiledMap* map,int i)
 		}
 	}
 
-	
+
 	CCTMXObjectGroup * group13 = map->objectGroupNamed("item_magnet");
 
 	if(group13 !=NULL)
@@ -1217,7 +1190,7 @@ void GameScene::scoreUpdate()
 {
 	pNum->cleanup();
 	g_score = g_score_item*10 + g_score_mob1*100 + g_score_mob2*200;
-	pNum->setString(CCString::createWithFormat("%d", g_score)->m_sString.c_str());
+	pNum->setString(CCString::createWithFormat("%9d", g_score)->m_sString.c_str());
 
 
 }
@@ -1244,7 +1217,7 @@ void GameScene::scoreInit()
 	pNum = CCLabelAtlas::create("0123456789", "number_sprite.png", 31, 40, '0');
 	pNum->setAnchorPoint(ccp(0,0));
 	pNum->setPosition(ccp(94,625));
-	pNum->setString(CCString::createWithFormat("%d", g_score)->m_sString.c_str());
+	pNum->setString(CCString::createWithFormat("%9d", g_score)->m_sString.c_str());
 
 	this->addChild(pNum,3);
 }
@@ -1314,7 +1287,6 @@ void GameScene::pause()
 void GameScene::endStage()
 {
 	m_character->stopAllActions();
-	this->removeChild(m_character);
 
 	CCSprite* missionComplete = CCSprite::create("success.png");
 	missionComplete->setAnchorPoint(ccp(0,0));
@@ -1323,22 +1295,24 @@ void GameScene::endStage()
 
 	CCSprite* mainmenu= CCSprite::create("gotomenu.png");
 	mainmenu->setAnchorPoint(ccp(0,0));
-	mainmenu->setPosition(ccp(895,228));
+	mainmenu->setPosition(ccp(895,109));
 	this->addChild(mainmenu,6);
 
 	CCSprite* next= CCSprite::create("next.png");
 	next->setAnchorPoint(ccp(0,0));
-	next->setPosition(ccp(895,109));
+	next->setPosition(ccp(895,228));
 	this->addChild(next,6);
 
 	CCLabelAtlas* lastScore =CCLabelAtlas::create("0123456789", "number_sprite.png", 31, 40, '0');;
 	lastScore->setAnchorPoint(ccp(0,0));
-	lastScore->setPosition(ccp(1120,349));
-	lastScore->setString(CCString::createWithFormat("%d", g_score)->m_sString.c_str());
+	lastScore->setPosition(ccp(850,349));
+	lastScore->setString(CCString::createWithFormat("%9d", g_score)->m_sString.c_str());
 	this->addChild(lastScore,7);
 	g_gameSuccess = true;
 
 	CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
 
 	this->unschedule(schedule_selector(GameScene::update));
+
+	//CCEditBox 
 }

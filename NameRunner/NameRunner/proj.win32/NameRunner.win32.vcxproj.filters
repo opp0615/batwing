@@ -73,6 +73,18 @@
     <ClInclude Include="RankScene.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="ItemSelectScene.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterSelectScene.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="temp.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="global.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -109,6 +121,18 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="GameSelectScene.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterSelectScene.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemSelectScene.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="temp.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="global.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
