@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="250" height="24" tilewidth="30" tileheight="30">
+ <tileset firstgid="1" name="Ob_stage3_object_fixed" tilewidth="94" tileheight="110">
+  <image source="Ob_stage3_object_fixed.png" width="94" height="110"/>
+ </tileset>
+ <tileset firstgid="2" name="Ob_stage3-1" tilewidth="120" tileheight="140">
+  <image source="Ob_stage3-1.png" width="120" height="140"/>
+ </tileset>
+ <tileset firstgid="3" name="Ob_stage3-2" tilewidth="120" tileheight="225">
+  <image source="Ob_stage3-2.png" width="120" height="225"/>
+ </tileset>
+ <tileset firstgid="4" name="Ob_stage3-boss" tilewidth="200" tileheight="200">
+  <image source="Ob_stage3-boss.png" width="200" height="220"/>
+ </tileset>
+ <tileset firstgid="5" name="Ig_item_coin" tilewidth="55" tileheight="55">
+  <image source="Ig_item_coin.png" width="55" height="55"/>
+ </tileset>
+ <tileset firstgid="6" name="Ig_item_magnet" tilewidth="55" tileheight="55">
+  <image source="Ig_item_magnet.png" width="55" height="55"/>
+ </tileset>
+ <tileset firstgid="7" name="Ig_item_run" tilewidth="55" tileheight="55">
+  <image source="Ig_item_run.png" width="55" height="55"/>
+ </tileset>
+ <tileset firstgid="8" name="Ig_item_huge" tilewidth="55" tileheight="55">
+  <image source="Ig_item_huge.png" width="55" height="55"/>
+ </tileset>
+ <tileset firstgid="9" name="130710_coin_silver" tilewidth="40" tileheight="40">
+  <image source="130710_coin_silver.png" width="40" height="40"/>
+ </tileset>
+ <tileset firstgid="10" name="130710_coin_bronze" tilewidth="40" tileheight="40">
+  <image source="130710_coin_bronze.png" width="40" height="40"/>
+ </tileset>
+ <tileset firstgid="11" name="130710_coin_gold" tilewidth="40" tileheight="40">
+  <image source="130710_coin_gold.png" width="40" height="40"/>
+ </tileset>
+ <tileset firstgid="12" name="stage3_level3" tilewidth="30" tileheight="30">
+  <image source="stage3_level3.png" width="7500" height="720"/>
+ </tileset>
+ <tileset firstgid="6012" name="floor" tilewidth="30" tileheight="30">
+  <image source="floor.png" width="30" height="30"/>
+ </tileset>
+ <layer name="background" width="250" height="24">
+  <data encoding="base64" compression="zlib">
+   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
+  </data>
+ </layer>
+ <objectgroup name="mob1" width="250" height="24" opacity="0">
+  <object gid="2" x="549" y="600"/>
+  <object gid="2" x="876" y="601"/>
+  <object gid="2" x="6523" y="599"/>
+ </objectgroup>
+ <objectgroup name="mob2" width="250" height="24" opacity="0.01">
+  <object gid="3" x="709" y="603"/>
+  <object gid="3" x="1039" y="601"/>
+  <object gid="3" x="2087" y="601"/>
+  <object gid="3" x="2227" y="601"/>
+  <object gid="3" x="2364" y="599"/>
+  <object gid="3" x="2504" y="600"/>
+  <object gid="3" x="2645" y="603"/>
+  <object gid="3" x="2785" y="603"/>
+  <object gid="3" x="2921" y="601"/>
+  <object gid="3" x="3061" y="601"/>
+  <object gid="3" x="3198" y="601"/>
+  <object gid="3" x="3340" y="603"/>
+  <object gid="3" x="3478" y="601"/>
+  <object gid="3" x="3617" y="602"/>
+  <object gid="3" x="3758" y="603"/>
+  <object gid="3" x="3894" y="600"/>
+  <object gid="3" x="4035" y="605"/>
+  <object gid="3" x="4174" y="602"/>
+  <object gid="3" x="5981" y="601"/>
+ </objectgroup>
+ <objectgroup name="coin_bronze" width="250" height="24" opacity="0">
+  <object gid="10" x="229" y="541"/>
+  <object gid="10" x="295" y="426"/>
+  <object gid="10" x="387" y="356"/>
+  <object gid="10" x="509" y="323"/>
+  <object gid="10" x="639" y="343"/>
+  <object gid="10" x="792" y="344"/>
+  <object gid="10" x="919" y="323"/>
+  <object gid="10" x="1041" y="359"/>
+  <object gid="10" x="1221" y="402"/>
+  <object gid="10" x="1290" y="494"/>
+  <object gid="10" x="1382" y="540"/>
+  <object gid="10" x="2125" y="348"/>
+  <object gid="10" x="2209" y="347"/>
+  <object gid="10" x="2285" y="347"/>
+  <object gid="10" x="2366" y="346"/>
+  <object gid="10" x="2446" y="348"/>
+  <object gid="10" x="2528" y="347"/>
+  <object gid="10" x="2608" y="347"/>
+  <object gid="10" x="2690" y="348"/>
+  <object gid="10" x="2768" y="349"/>
+  <object gid="10" x="2847" y="349"/>
+  <object gid="10" x="2929" y="347"/>
+  <object gid="10" x="3008" y="347"/>
+  <object gid="10" x="3087" y="347"/>
+  <object gid="10" x="3167" y="348"/>
+  <object gid="10" x="3250" y="347"/>
+  <object gid="10" x="3327" y="349"/>
+  <object gid="10" x="3408" y="349"/>
+  <object gid="10" x="3486" y="347"/>
+  <object gid="10" x="3567" y="344"/>
+  <object gid="10" x="3648" y="347"/>
+  <object gid="10" x="3724" y="347"/>
+  <object gid="10" x="3806" y="349"/>
+  <object gid="10" x="3888" y="348"/>
+  <object gid="10" x="3807" y="350"/>
+  <object gid="10" x="3889" y="348"/>
+  <object gid="10" x="3966" y="350"/>
+  <object gid="10" x="4049" y="347"/>
+  <object gid="10" x="4128" y="347"/>
+  <object gid="10" x="4211" y="348"/>
+  <object gid="10" x="4287" y="349"/>
+  <object gid="10" x="4365" y="348"/>
+  <object gid="10" x="6323" y="543"/>
+  <object gid="10" x="6391" y="489"/>
+  <object gid="10" x="6476" y="469"/>
+  <object gid="10" x="6686" y="473"/>
+  <object gid="10" x="6758" y="541"/>
+  <object gid="10" x="7091" y="544"/>
+  <object gid="10" x="7173" y="543"/>
+  <object gid="10" x="7253" y="541"/>
+ </objectgroup>
+ <objectgroup name="con_silver" width="250" height="24" opacity="0">
+  <object gid="9" x="344" y="542"/>
+  <object gid="9" x="414" y="488"/>
+  <object gid="9" x="498" y="469"/>
+  <object gid="9" x="1606" y="541"/>
+  <object gid="9" x="1673" y="426"/>
+  <object gid="9" x="1765" y="357"/>
+  <object gid="9" x="1886" y="322"/>
+  <object gid="9" x="2013" y="343"/>
+  <object gid="9" x="5100" y="544"/>
+  <object gid="9" x="5179" y="540"/>
+  <object gid="9" x="5261" y="541"/>
+  <object gid="9" x="5341" y="539"/>
+  <object gid="9" x="5420" y="540"/>
+  <object gid="9" x="5500" y="540"/>
+  <object gid="9" x="5565" y="428"/>
+  <object gid="9" x="5658" y="358"/>
+  <object gid="9" x="5780" y="323"/>
+  <object gid="9" x="5907" y="341"/>
+  <object gid="9" x="6160" y="403"/>
+  <object gid="9" x="6231" y="496"/>
+  <object gid="9" x="7089" y="461"/>
+  <object gid="9" x="7171" y="463"/>
+  <object gid="9" x="7253" y="463"/>
+ </objectgroup>
+ <objectgroup name="coin_gold" width="250" height="24" opacity="0">
+  <object gid="11" x="589" y="434"/>
+  <object gid="11" x="918" y="433"/>
+  <object gid="11" x="2477" y="277"/>
+  <object gid="11" x="2546" y="224"/>
+  <object gid="11" x="2630" y="206"/>
+  <object gid="11" x="2717" y="226"/>
+  <object gid="11" x="2787" y="277"/>
+  <object gid="11" x="2897" y="278"/>
+  <object gid="11" x="2967" y="225"/>
+  <object gid="11" x="3051" y="203"/>
+  <object gid="11" x="3137" y="225"/>
+  <object gid="11" x="3209" y="275"/>
+  <object gid="11" x="3311" y="276"/>
+  <object gid="11" x="3377" y="223"/>
+  <object gid="11" x="3463" y="206"/>
+  <object gid="11" x="3550" y="225"/>
+  <object gid="11" x="3621" y="275"/>
+  <object gid="11" x="3729" y="278"/>
+  <object gid="11" x="3802" y="227"/>
+  <object gid="11" x="3888" y="207"/>
+  <object gid="11" x="3971" y="225"/>
+  <object gid="11" x="4040" y="279"/>
+  <object gid="11" x="4143" y="275"/>
+  <object gid="11" x="4214" y="223"/>
+  <object gid="11" x="4300" y="207"/>
+  <object gid="11" x="4386" y="222"/>
+  <object gid="11" x="4457" y="278"/>
+  <object gid="11" x="5606" y="542"/>
+  <object gid="11" x="5677" y="488"/>
+  <object gid="11" x="5764" y="473"/>
+  <object gid="11" x="6686" y="397"/>
+  <object gid="11" x="6773" y="415"/>
+  <object gid="11" x="6843" y="468"/>
+  <object gid="11" x="7090" y="385"/>
+  <object gid="11" x="7171" y="384"/>
+  <object gid="11" x="7253" y="386"/>
+ </objectgroup>
+ <objectgroup name="object" width="250" height="24" opacity="0"/>
+ <objectgroup name="floor" width="250" height="24" opacity="0">
+  <object gid="6012" x="4643" y="631"/>
+  <object gid="6012" x="4673" y="630"/>
+  <object gid="6012" x="4703" y="630"/>
+  <object gid="6012" x="4732" y="631"/>
+  <object gid="6012" x="4762" y="630"/>
+  <object gid="6012" x="4643" y="662"/>
+  <object gid="6012" x="4671" y="661"/>
+  <object gid="6012" x="4700" y="660"/>
+  <object gid="6012" x="4727" y="660"/>
+  <object gid="6012" x="4755" y="660"/>
+ </objectgroup>
+ <objectgroup name="item_magnet" width="250" height="24" opacity="0"/>
+ <objectgroup name="item_run" width="250" height="24" opacity="0"/>
+ <objectgroup name="item_coin" width="250" height="24" opacity="0">
+  <object gid="5" x="4379" y="435"/>
+ </objectgroup>
+ <objectgroup name="item_huge" width="250" height="24" opacity="0.01"/>
+</map>

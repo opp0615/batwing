@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="250" height="24" tilewidth="30" tileheight="30">
+ <layer name="background" width="250" height="24">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T+3sARQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADddwAAB
+  </data>
+ </layer>
+ <objectgroup name="mob1" width="250" height="24"/>
+ <objectgroup name="mob2" width="250" height="24"/>
+ <objectgroup name="coin_bronze" width="250" height="24"/>
+ <objectgroup name="coin_silver" width="250" height="24"/>
+ <objectgroup name="coin_gold" width="250" height="24"/>
+ <objectgroup name="object" width="250" height="24"/>
+ <objectgroup name="floor" width="250" height="24"/>
+ <objectgroup name="item_magnet" width="250" height="24"/>
+ <objectgroup name="item_run" width="250" height="24"/>
+ <objectgroup name="item_coin" width="250" height="24"/>
+ <objectgroup name="item_huge" width="250" height="24"/>
+ <objectgroup name="boss" width="250" height="24"/>
+</map>

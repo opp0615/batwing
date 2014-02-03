@@ -1,0 +1,14 @@
+타일맵 레이어 목록
+
+mob1
+mob2
+coin_bronze
+coin_silver
+coin_gold
+object
+floor
+item_magnet
+item_run
+item_coin
+item_huge
+boss

@@ -32,7 +32,30 @@ bool ItemSelectScene::init()
 			return false;
 		}
 
-			this->setTouchEnabled(true);
+		CCSprite* background = CCSprite::create("Item_select_scene.png");
+		background->setAnchorPoint(ccp(0,0));
+		background->setPosition(ccp(0,0));
+		this->addChild(background,1);
+
+		CCSprite* itembox = CCSprite::create("item inventory.png");
+		itembox->setAnchorPoint(ccp(0,0));
+		itembox->setPosition(ccp(432,421));
+		this->addChild(itembox,3);
+
+		CCSprite* itembox2 = CCSprite::create("item inventory.png");
+		itembox2->setAnchorPoint(ccp(0,0));
+		itembox2->setPosition(ccp(432,35));
+		this->addChild(itembox2,3);
+
+		CCSprite* itembox3 = CCSprite::create("item inventory.png");
+		itembox3->setAnchorPoint(ccp(0,0));
+		itembox3->setPosition(ccp(748,421));
+		this->addChild(itembox3,3);
+
+
+
+
+		this->setTouchEnabled(true);
 	}
 	return true;
 }

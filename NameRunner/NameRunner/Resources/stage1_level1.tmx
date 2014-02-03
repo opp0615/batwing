@@ -107,7 +107,7 @@
   <object gid="6003" x="7009" y="491"/>
   <object gid="6003" x="7099" y="539"/>
  </objectgroup>
- <objectgroup name="coin_silver" width="250" height="24" visible="0"/>
+ <objectgroup name="coin_silver" width="250" height="24"/>
  <objectgroup name="coin_gold" width="250" height="24" visible="0"/>
  <objectgroup name="object" width="250" height="24" visible="0"/>
  <objectgroup name="floor" width="250" height="24" visible="0"/>

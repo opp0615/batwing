@@ -22,7 +22,8 @@ private:
 	Character* g_char;
 	Map* g_map;
 	itemManager* g_itemManager;
-	int g_click;	int game_speed;
+	int g_click;
+	int game_speed;
 	int scroll_count;
 	CCSprite* m_character;
 	CCSprite* nowpositionpoint ;
@@ -34,17 +35,25 @@ private:
 	bool g_gameSuccess;
 	bool g_pauseClick;
 	
+	//시간체크
 	float g_checktime;
 	int g_temptime;
 	float g_loadtime;
 
+	//스코어
 	int g_score;
-	int g_score_item;
+	int g_score_coinBronze;
+	int g_score_coinSilver;
+	int g_score_coinGold;
 	int g_score_mob1;
 	int g_score_mob2;
 	int g_score_run;
+	int g_viewingScene;
 
-	bool g_checkmagnetic;
+	int gameEndZone;
+
+	float g_magneticAccelConst;//자석 가속도 상수
+	bool g_checkmagnetic;//자석 온오프
 
 	CCAction* runact;
 	CCAction* jump1act;
@@ -52,12 +61,12 @@ private:
 
 	CCAction* deadact;
 
-	CCTMXTiledMap* map_level[5];
+	CCTMXTiledMap* map_level[10];//맵
 
 	int pauseCheckAni;
 
 	int GridX,GridY;
-	CCPoint g_virtual_char;
+	CCPoint g_virtual_char;//가상위치
 
 	std::list<CCSprite*> g_itemlist;
 	std::list<CCSprite*>::iterator g_item_iterator;
@@ -99,6 +108,9 @@ private:
 	std::list<CCSprite*>::iterator g_magnet_item_iterator;
 
 	CCSprite* g_boss;
+	CCSprite* g_mob1;
+	CCSprite* g_mob2;
+	CCSprite* g_deathObject;
 
 	//floorcheck
 
@@ -149,6 +161,8 @@ public:
 
 	void map2create();
 
+	void callBackRemoveEffect(CCNode* sender);
+
 	void animationControl();
 
 	void animationcreate();
@@ -156,6 +170,8 @@ public:
 	void magneticEffect();
 
 	int checkTime();
+
+	void objectDataClear();
 
 	void scoreUpdate();
 	void scoreInit();
