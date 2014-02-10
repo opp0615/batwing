@@ -61,6 +61,16 @@ void Character::setJump(float jump_v)
 	{
 		v= jump_v;
 	}
+
+	if(c_click ==1)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Result_jump.mp3");
+	}
+
+	else if(c_click ==2)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Result_jumptwice.mp3");
+	}
 	//c_click = g_click;
 
 }
@@ -68,6 +78,7 @@ void Character::setJump(float jump_v)
 void Character::mobjump()
 {
 	v= 5;
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Result_objump.mp3");
 }
 
 void Character::setClick(int g_click)
@@ -175,9 +186,22 @@ void Character::animationInit()
 		
 		break;
 	case 3:
+		texture = CCTextureCache::sharedTextureCache()->addImage("Char_Livingdead.png");
+		frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*0,0,115,160));
+		frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*1,0,115,160));
+		frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*2,0,115,160));
+		frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*3,0,115,160));
+		frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*4,0,115,160));
+		frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*5,0,115,160));
+		frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*6,0,115,160));
+		frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*7,0,115,160));
+		frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*8,0,115,160));
+		frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*9,0,115,160));
+		frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*10,0,115,160));
+
 		break;
 	default:
-		texture = CCTextureCache::sharedTextureCache()->addImage("Char_Captain_nine_oclock.png");
+		texture = CCTextureCache::sharedTextureCache()->addImage("Char_Subway.png");
 		// manually add frames to the frame cache
 		frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
 		frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
@@ -272,23 +296,48 @@ void Character::animationCreate()
 
 		break;
 	case 2:
+		texture = CCTextureCache::sharedTextureCache()->addImage("Char_pinok2.png");
+		frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*0,0,115,160));
+		frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*1,0,115,160));
+		frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*2,0,115,160));
+		frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*3,0,115,160));
+		frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*4,0,115,160));
+		frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*5,0,115,160));
+		frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*6,0,115,160));
+		frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*7,0,115,160));
+		frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*8,0,115,160));
+		frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*9,0,115,160));
+		frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*10,0,115,160));
 		break;
 	case 3:
+		texture = CCTextureCache::sharedTextureCache()->addImage("Char_Livingdead.png");
+		frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*0,0,115,160));
+		frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*1,0,115,160));
+		frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*2,0,115,160));
+		frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*3,0,115,160));
+		frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*4,0,115,160));
+		frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*5,0,115,160));
+		frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*6,0,115,160));
+		frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*7,0,115,160));
+		frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*8,0,115,160));
+		frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*9,0,115,160));
+		frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*10,0,115,160));
+
 		break;
 	default:
-		texture = CCTextureCache::sharedTextureCache()->addImage("main character.png");
+		texture = CCTextureCache::sharedTextureCache()->addImage("Char_Subway.png");
 		// manually add frames to the frame cache
-		frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*0,0,140,160));
-		frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*1,0,140,160));
-		frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*2,0,140,160));
-		frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*3,0,140,160));
-		frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*4,0,140,160));
-		frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*5,0,140,160));
-		frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*6,0,140,160));
-		frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*7,0,140,160));
-		frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*8,0,140,160));
-		frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*9,0,140,160));
-		frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(140*10,0,140,160));
+		frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*0,0,115,160));
+		frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*1,0,115,160));
+		frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*2,0,115,160));
+		frame3 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*3,0,115,160));
+		frame4 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*4,0,115,160));
+		frame5 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*5,0,115,160));
+		frame6 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*6,0,115,160));
+		frame7 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*7,0,115,160));
+		frame8 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*8,0,115,160));
+		frame9 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*9,0,115,160));
+		frame10 = CCSpriteFrame::createWithTexture(texture, CCRectMake(115*10,0,115,160));
 
 		break;
 	}

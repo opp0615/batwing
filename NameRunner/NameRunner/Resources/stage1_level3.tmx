@@ -114,9 +114,8 @@
  </objectgroup>
  <objectgroup name="item_magnet" width="250" height="24" visible="0"/>
  <objectgroup name="item_coin" width="250" height="24" visible="0"/>
- <objectgroup name="item_run" width="250" height="24" opacity="0.01"/>
- <objectgroup name="item_huge" width="250" height="24" opacity="0.01">
-  <object gid="7" x="1952" y="476"/>
+ <objectgroup name="item_run" width="250" height="24" opacity="0"/>
+ <objectgroup name="item_huge" width="250" height="24" opacity="0">
   <object gid="9" x="5178" y="546"/>
  </objectgroup>
  <objectgroup name="mob1" width="250" height="24" opacity="0">

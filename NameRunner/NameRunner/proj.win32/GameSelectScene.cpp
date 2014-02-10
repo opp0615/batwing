@@ -128,6 +128,7 @@ void GameSelectScene::ccTouchesEnded(CCSet* touches,CCEvent* event)
 	{
 		if( 425<=location.x && location.x<=425 + stage_width && 160<=location.y && location.y<=160+stage_height)
 		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Result_stageselect.mp3");
 			CCScene *pScene = GameScene::scene();
 			CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
 			CCDirector::sharedDirector()->replaceScene(pTran);

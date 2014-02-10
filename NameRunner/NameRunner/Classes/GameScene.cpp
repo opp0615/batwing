@@ -81,6 +81,7 @@ bool GameScene::init()
 		g_checkmagnetic = false;
 		g_magneticAccelConst=0;
 
+		
 		mapInit();
 
 		CCSprite* pause = CCSprite::create("130827_Pause.png");
@@ -120,8 +121,8 @@ bool GameScene::init()
 
 		this->schedule(schedule_selector(GameScene::update),0.01);
 
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic(
-			"pandora.wav",true);
+		soundInit();
+		
 	}
 	return true;
 }
@@ -232,6 +233,12 @@ void GameScene::collisionCheck()
 		{
 			g_score_coinBronze++;
 
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Result_getCoin.wav");
+			
+			
+			//ÀÌÆåÆ® animation
+
+			/*
 			CCSprite* eff = CCSprite::create("Eff_getcoin_bronze.png",CCRect(0,0,70,70));
 			eff->setAnchorPoint(ccp(0,0));
 			eff->setPosition(item_P);
@@ -252,9 +259,13 @@ void GameScene::collisionCheck()
 			
 			eff->runAction(seq0);
 
+			*/
+
 			this->removeChild((*g_coin_bronze_iterator));
 			g_coin_bronze_iterator=g_coin_bronze.erase(g_coin_bronze_iterator++);
 			bDeleted = true;
+
+
 		}
 
 		if (!bDeleted)
@@ -283,6 +294,9 @@ void GameScene::collisionCheck()
 		if(item_P.x  < char_P.x+character_width && item_P.x + coin_width > char_P.x && item_P.y + coin_height >char_P.y &&item_P.y<char_P.y+character_height)
 		{
 			g_score_coinSilver++;
+
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Result_getCoin.wav");
+
 			this->removeChild((*g_coin_silver_iterator));
 			g_coin_silver_iterator=g_coin_silver.erase(g_coin_silver_iterator++);
 			bDeleted = true;
@@ -314,6 +328,9 @@ void GameScene::collisionCheck()
 		if(item_P.x  < char_P.x+character_width && item_P.x + coin_width > char_P.x && item_P.y + coin_height >char_P.y &&item_P.y<char_P.y+character_height)
 		{
 			g_score_coinGold++;
+
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Result_getCoin.wav");
+
 			this->removeChild((*g_coin_gold_iterator));
 			g_coin_gold_iterator=g_coin_gold.erase(g_coin_gold_iterator++);
 			bDeleted = true;
@@ -340,6 +357,7 @@ void GameScene::collisionCheck()
 		if(g_char->getCharSpeed() < 0 && boss_P.x  < char_P.x+character_width && boss_P.x + boss_width > char_P.x && boss_P.y + boss_height >char_P.y &&boss_P.y + 200<char_P.y+character_height)
 		{
 			g_char->mobjump();
+
 			this->removeChild(g_boss);
 			g_boss = NULL;
 
@@ -535,6 +553,7 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 
 			else if(895<=location.x && location.x<=895 + 250 && 296<=location.y && location.y<=296+75)
 			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->stopAllEffects();
 				CCScene *pScene = MainmenuScene::scene();
 				CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
 				CCDirector::sharedDirector()->replaceScene(pTran);
@@ -561,7 +580,7 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 
 		if( 895<=location.x && location.x<=895 + 250 && 228<=location.y && location.y<=228+75)
 		{
-
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopAllEffects();
 			CCScene *pScene = GameScene::scene();
 			CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
 			CCDirector::sharedDirector()->replaceScene(pTran);
@@ -569,6 +588,7 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 
 		else if( 895<=location.x && location.x<=895 + 250 && 109<=location.y && location.y<=109+75)
 		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopAllEffects();
 			CCScene *pScene = MainmenuScene::scene();
 			CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
 			CCDirector::sharedDirector()->replaceScene(pTran);
@@ -580,6 +600,7 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 
 		if( 895<=location.x && location.x<=895 + 250 && 109<=location.y && location.y<=109+75)
 		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopAllEffects();
 			CCScene *pScene = MainmenuScene::scene();
 			CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
 			CCDirector::sharedDirector()->replaceScene(pTran);
@@ -720,7 +741,7 @@ void GameScene::mapInit()
 		back1= CCSprite::create("Italy_background.png");
 		back2= CCSprite::create("Italy_background.png");
 		global_levelNumber = 5;
-		gameEndZone = 7500*global_levelNumber-1000;
+		gameEndZone = 7500*global_levelNumber-8500;
 	}
 
 	else if(global_mapSet ==2)
@@ -735,7 +756,7 @@ void GameScene::mapInit()
 		back2= CCSprite::create("Bg_stage2.png");
 
 		global_levelNumber=6;
-		gameEndZone = 7500*global_levelNumber-1000;
+		gameEndZone = 7500*global_levelNumber-8500;
 	}
 
 	else if(global_mapSet ==3)
@@ -751,7 +772,7 @@ void GameScene::mapInit()
 		back2= CCSprite::create("Bg_stage3_lab.png");
 
 		global_levelNumber=7;
-		gameEndZone = 7500*global_levelNumber-1000;
+		gameEndZone = 7500*global_levelNumber-8500;
 	}
 
 	else if(global_mapSet ==4)
@@ -768,7 +789,7 @@ void GameScene::mapInit()
 		back2= CCSprite::create("Bg_stage4.png");
 
 		global_levelNumber=8;
-		gameEndZone = 7500*global_levelNumber-1000;
+		gameEndZone = 7500*global_levelNumber-8500;
 	}
 
 
@@ -888,12 +909,13 @@ void GameScene::charInit()
 		m_character = CCSprite::create("Char_Ring.png",CCRect(0,0,140,160));
 		break;
 	case 2:
-		m_character = CCSprite::create("Char_pinok2.png",CCRect(0,0,140,160));
+		m_character = CCSprite::create("Char_pinok2.png",CCRect(0,0,115,160));
 		break;
 	case 3:
+		m_character = CCSprite::create("Char_Livingdead.png",CCRect(0,0,115,160));
 		break;
 	default:
-		m_character = CCSprite::create("Char_Captain_nine_oclock.png",CCRect(0,0,140,160));
+		m_character = CCSprite::create("Char_Subway.png",CCRect(0,0,115,160));
 		break;
 	}
 
@@ -1414,6 +1436,8 @@ void GameScene::gameOver()
 {
 	g_char->runDeadAnimation();
 
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("result_dead.wav");
+
 	CCSprite* gameover = CCSprite::create("fail.png");
 	gameover->setAnchorPoint(ccp(0,0));
 	gameover->setPosition(ccp(0,0));
@@ -1498,6 +1522,8 @@ void GameScene::endStage()
 	this->addChild(lastScore,7);
 	g_gameSuccess = true;
 
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("result_success.mp3");
+
 	CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
 
 	this->unschedule(schedule_selector(GameScene::update));
@@ -1550,4 +1576,23 @@ void GameScene::callBackRemoveEffect(CCNode* sender)
 {
 	CCSprite* getter = (CCSprite*)sender;
 	this->removeChild(getter);
+}
+
+void GameScene::soundInit()
+{
+	if(global_bgmSet == true)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic(
+				"pandora.wav",true);
+	}
+
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("Result_getCoin.wav");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("bell-hand2.wav");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("Result_jump.mp3");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("Result_jumptwice.mp3");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("result_success.mp3");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("result_dead.wav");
+	
+	
+	
 }

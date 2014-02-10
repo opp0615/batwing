@@ -16,6 +16,12 @@ using namespace cocos2d;
 class MainmenuScene : public cocos2d::CCLayerColor
 {
 public:
+	bool m_popUpSet;
+	bool m_soundSet;
+	bool m_bgmSet;
+
+	void soundInit();
+
 	virtual bool init();
 
 	static cocos2d::CCScene* scene();

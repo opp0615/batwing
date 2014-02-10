@@ -2,6 +2,7 @@
 
 #include "cocos2d.h"
 #include "global.h"
+#include "SimpleAudioEngine.h"
 using namespace cocos2d;
 
 class Character {

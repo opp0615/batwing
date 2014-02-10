@@ -174,7 +174,10 @@ public:
 	void objectDataClear();
 
 	void scoreUpdate();
+
 	void scoreInit();
+
+	void soundInit();
 
 	void endStage();
     // implement the "static node()" method manually
