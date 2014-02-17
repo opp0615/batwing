@@ -39,6 +39,7 @@ private:
 	float g_checktime;
 	int g_temptime;
 	float g_loadtime;
+	float g_coinItemLoadTime;
 
 	//스코어
 	int g_score;
@@ -54,6 +55,7 @@ private:
 
 	float g_magneticAccelConst;//자석 가속도 상수
 	bool g_checkmagnetic;//자석 온오프
+	bool g_checkCoinDouble;
 
 	CCAction* runact;
 	CCAction* jump1act;
@@ -168,6 +170,10 @@ public:
 	void animationcreate();
 
 	void magneticEffect();
+
+	void effectAnimation(CCPoint item_P);
+
+	void coinDoubleEffect();
 
 	int checkTime();
 

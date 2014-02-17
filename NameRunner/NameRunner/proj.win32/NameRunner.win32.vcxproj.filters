@@ -85,6 +85,9 @@
     <ClInclude Include="global.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="loginScene.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -133,6 +136,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="global.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="loginScene.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

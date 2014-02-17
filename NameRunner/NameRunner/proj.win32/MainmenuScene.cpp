@@ -67,6 +67,9 @@ bool MainmenuScene::init()
 			return false;
 		}
 
+	
+
+
 		m_popUpSet = false;
 		m_soundSet = true;
 		m_bgmSet = true;
@@ -131,12 +134,12 @@ void MainmenuScene::ccTouchesBegan(CCSet* touches,CCEvent* event)
 
 		else if( 169<=location.x && location.x<=169 + strategyOffice_width && 337<=location.y && location.y<=337+strategyOffice_height)
 		{
-			CCSprite* getter;
 			getter = (CCSprite*)this->getChildByTag(tag_strategyOffice1);
 			this->removeChild(getter);
 
 			CCSprite* stageSelect2 = CCSprite::create("Strategy Office2.png");
 			stageSelect2->setAnchorPoint(ccp(0,0));
+			CCSprite* getter;
 			stageSelect2->setPosition(ccp(157,323));
 			this->addChild(stageSelect2,1,tag_strategyOffice2);
 
@@ -167,6 +170,7 @@ void MainmenuScene::ccTouchesBegan(CCSet* touches,CCEvent* event)
 		}
 	}
 }
+
 void MainmenuScene::ccTouchesEnded(CCSet* touches,CCEvent* event)
 {
 	CCTouch* touch = (CCTouch*)(touches ->anyObject());

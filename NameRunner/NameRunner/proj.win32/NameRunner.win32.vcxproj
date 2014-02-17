@@ -135,6 +135,7 @@
     <ClInclude Include="global.h" />
     <ClInclude Include="itemManager.h" />
     <ClInclude Include="ItemSelectScene.h" />
+    <ClInclude Include="loginScene.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="MainmenuScene.h" />
     <ClInclude Include="Map.h" />
@@ -154,6 +155,7 @@
     <ClCompile Include="global.cpp" />
     <ClCompile Include="itemManager.cpp" />
     <ClCompile Include="ItemSelectScene.cpp" />
+    <ClCompile Include="loginScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainmenuScene.cpp" />
     <ClCompile Include="Map.cpp" />

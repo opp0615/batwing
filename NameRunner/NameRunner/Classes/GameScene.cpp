@@ -1,6 +1,6 @@
 #include "GameScene.h"
 
-#define character_width 140
+#define character_width 115
 #define character_height 160
 #define coin_width 40
 #define coin_height 40
@@ -55,18 +55,14 @@ bool GameScene::init()
 			return false;
 		}
 
-		CCSprite* startImage = CCSprite::create("StartImage.png");
-		startImage->setAnchorPoint(ccp(0,0));
-		startImage->setPosition(ccp(1160,620));
-		this->addChild(startImage,2);
-
 		game_speed = 10;
 
 		g_click = 0;
 		scroll_count = 0;
 		gameEndZone=0;
-		
+
 		g_boss =NULL;
+		g_checkCoinDouble = false;
 
 		scoreInit();
 		g_gameSuccess =false;
@@ -80,8 +76,9 @@ bool GameScene::init()
 		g_loadtime =0;
 		g_checkmagnetic = false;
 		g_magneticAccelConst=0;
+		g_coinItemLoadTime = 0;
 
-		
+
 		mapInit();
 
 		CCSprite* pause = CCSprite::create("130827_Pause.png");
@@ -115,14 +112,13 @@ bool GameScene::init()
 
 		charInit();
 
-		this->removeChild(startImage);
 
 		this->setTouchEnabled(true);
 
 		this->schedule(schedule_selector(GameScene::update),0.01);
 
 		soundInit();
-		
+
 	}
 	return true;
 }
@@ -131,6 +127,7 @@ void GameScene::update(float dt)
 {
 	if(checkTime() >= 10)
 	{
+		//0.01 초가 10 번 될 떄 0.1 초 증가하므로 1초당 1씩 증가하는게 된다.
 		g_checktime += 0.1;
 		g_temptime = 0;
 	}
@@ -145,6 +142,7 @@ void GameScene::update(float dt)
 	scoreUpdate();
 	collisionCheck();
 	magneticEffect();
+	coinDoubleEffect();
 
 }
 
@@ -193,7 +191,7 @@ void GameScene::collisionCheck()
 
 		if(item_P.x  < char_P.x+character_width && item_P.x + coin_width > char_P.x && item_P.y + coin_height >char_P.y &&item_P.y<char_P.y+character_height)
 		{
-			
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("bell-hand2.mp3");
 			this->removeChild((*g_magnet_item_iterator)); 
 			g_magnet_item_iterator=g_magnet_item.erase(g_magnet_item_iterator++);
 			bDeleted = true;
@@ -208,6 +206,45 @@ void GameScene::collisionCheck()
 		}
 
 	}
+
+
+	//코인2배 아이템
+
+	for(g_coin_item_iterator = g_coin_item.begin(); g_coin_item_iterator != g_coin_item.end(); )
+	{
+		bool bDeleted = false;
+		temp = *(g_coin_item_iterator);
+
+		item_P=temp->getPosition();
+
+		if(item_P.x<-200)
+		{
+			this->removeChild((*g_coin_item_iterator)); 
+			g_coin_item_iterator=g_coin_item.erase(g_coin_item_iterator++);
+			bDeleted = true;
+		}		
+
+
+		if(item_P.x  < char_P.x+character_width && item_P.x + coin_width > char_P.x && item_P.y + coin_height >char_P.y &&item_P.y<char_P.y+character_height)
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("bell-hand2.mp3");
+
+			g_coinItemLoadTime = g_checktime;
+			g_checkCoinDouble = true;
+
+			this->removeChild((*g_coin_item_iterator)); 
+			g_coin_item_iterator=g_coin_item.erase(g_coin_item_iterator++);
+			bDeleted = true;
+
+		}
+
+		if (!bDeleted)
+		{
+			g_coin_item_iterator++;
+		}
+
+	}
+
 
 
 	//item collision check
@@ -231,11 +268,20 @@ void GameScene::collisionCheck()
 
 		if(item_P.x  < char_P.x+character_width && item_P.x + coin_width > char_P.x && item_P.y + coin_height >char_P.y &&item_P.y<char_P.y+character_height)
 		{
-			g_score_coinBronze++;
+
+			if(g_checkCoinDouble == false)
+			{
+				g_score_coinBronze++;
+			}
+
+			else
+			{
+				g_score_coinBronze = g_score_coinBronze +2;
+			}
 
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Result_getCoin.wav");
-			
-			
+
+
 			//이펙트 animation
 
 			/*
@@ -256,7 +302,8 @@ void GameScene::collisionCheck()
 			CCAnimation * animation0 = CCAnimation::createWithSpriteFrames(animFrames0, 0.1f);
 			CCAnimate *animate0 = CCAnimate::create(animation0);
 			CCActionInterval* seq0 = CCSequence::create(animate0,CCCallFuncN::create(this,callfuncN_selector(GameScene::callBackRemoveEffect)),NULL);
-			
+
+
 			eff->runAction(seq0);
 
 			*/
@@ -275,7 +322,6 @@ void GameScene::collisionCheck()
 
 	}
 
-
 	for(g_coin_silver_iterator = g_coin_silver.begin(); g_coin_silver_iterator != g_coin_silver.end(); )
 	{
 		bool bDeleted = false;
@@ -293,7 +339,15 @@ void GameScene::collisionCheck()
 
 		if(item_P.x  < char_P.x+character_width && item_P.x + coin_width > char_P.x && item_P.y + coin_height >char_P.y &&item_P.y<char_P.y+character_height)
 		{
-			g_score_coinSilver++;
+			if(g_checkCoinDouble == false)
+			{
+				g_score_coinSilver++;
+			}
+
+			else
+			{
+				g_score_coinSilver = g_score_coinSilver +2;
+			}
 
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Result_getCoin.wav");
 
@@ -327,7 +381,16 @@ void GameScene::collisionCheck()
 
 		if(item_P.x  < char_P.x+character_width && item_P.x + coin_width > char_P.x && item_P.y + coin_height >char_P.y &&item_P.y<char_P.y+character_height)
 		{
-			g_score_coinGold++;
+
+			if(g_checkCoinDouble == false)
+			{
+				g_score_coinGold++;
+			}
+
+			else
+			{
+				g_score_coinGold = g_score_coinGold +2;
+			}
 
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Result_getCoin.wav");
 
@@ -396,6 +459,8 @@ void GameScene::collisionCheck()
 				this->removeChild((*g_mob_iterator)); 
 				g_mob_iterator=g_moblist.erase(g_mob_iterator++);
 
+				effectAnimation(mob_P);
+
 				bDeleted = true;
 			}
 
@@ -440,6 +505,8 @@ void GameScene::collisionCheck()
 				g_score_mob2++;
 				this->removeChild((*g_mob_iterator2));
 				g_mob_iterator2=g_moblist2.erase(g_mob_iterator2++);
+
+				effectAnimation(mob2_P);
 
 				bDeleted = true;
 			}
@@ -606,12 +673,20 @@ void GameScene::ccTouchesBegan(CCSet* touches,CCEvent* evnet)
 			CCDirector::sharedDirector()->replaceScene(pTran);
 		}
 
+		else if( 895<=location.x && location.x<=895 + 250 && 228<=location.y && location.y<=228+75)
+		{
+			if(global_mapSet <4)
+			{
+				global_mapSet++;
+				CCScene *pScene = GameScene::scene();
+				CCTransitionScene* pTran = CCTransitionFade::create(1.0f, pScene);
+				CCDirector::sharedDirector()->replaceScene(pTran);
+			}
+		}
+
 	}
 
-
 }
-
-
 
 
 void GameScene::itemScrolling()
@@ -845,7 +920,7 @@ void GameScene::mapScrolling()
 	{
 		mapdataload(map_level[g_viewingScene+2],1);
 		g_viewingScene++;
-		
+
 	}
 	//CCLog("mapdis %f %f" ,map_P.x,map_P.y);
 
@@ -858,12 +933,12 @@ void GameScene::floorcheck()
 
 	CCPoint temp;
 	g_virtual_char.setPoint(g_virtual_char.x+ game_speed,temp_char.y);
-	
+
 	for(g_floor_iterator = g_floor.begin(); g_floor_iterator != g_floor.end(); g_floor_iterator++)
 	{
 
 		temp = *(g_floor_iterator);
-	
+
 		if(temp.x  <temp_char.x+character_width && temp.x + 30 > temp_char.x+character_width -40 && temp.y + 50 >temp_char.y &&temp.y<temp_char.y+character_height)
 		{
 			g_char->setfloorcheck(1);
@@ -878,7 +953,7 @@ void GameScene::floorcheck()
 	{
 
 		temp = *(g_floor_iterator);
-		
+
 
 		break;
 
@@ -1312,7 +1387,7 @@ void GameScene::magneticEffect()
 
 			if(item_P.x <= 2000)
 			{
-				
+
 				multyX = item_P.x - char_P.x;
 				multyY = item_P.y - char_P.y;
 				accelX = multyX*g_magneticAccelConst/sqrt(multyX*multyX+multyY*multyY);
@@ -1485,12 +1560,12 @@ void GameScene::pause()
 	mainmenu->setPosition(ccp(895, 296));
 	this->addChild(mainmenu,7,tag_goToMenu);
 
-	CCSprite* sound = CCSprite::create("sound_on.png");
+	CCSprite* sound = CCSprite::create("sound.png",CCRect(0,0,250,75));
 	sound->setAnchorPoint(ccp(0,0));
 	sound->setPosition(ccp(895,181));
 	this->addChild(sound,7,tag_soundControl);
 
-	CCSprite* bgm = CCSprite::create("BGM_on.png");
+	CCSprite* bgm = CCSprite::create("BGM.png",CCRect(0,0,250,75));
 	bgm->setAnchorPoint(ccp(0,0));
 	bgm->setPosition(ccp(895,65));
 	this->addChild(bgm,7,tag_bgmControl);
@@ -1533,7 +1608,7 @@ void GameScene::endStage()
 
 void GameScene::objectDataClear()
 {
-	
+
 	if(global_mapSet ==1)
 	{
 		g_boss = CCSprite::create("Ob_stage1_object_boss.png");
@@ -1583,7 +1658,7 @@ void GameScene::soundInit()
 	if(global_bgmSet == true)
 	{
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic(
-				"pandora.wav",true);
+			"pandora.wav",true);
 	}
 
 	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("Result_getCoin.wav");
@@ -1592,7 +1667,44 @@ void GameScene::soundInit()
 	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("Result_jumptwice.mp3");
 	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("result_success.mp3");
 	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("result_dead.wav");
-	
-	
-	
+
+
+
+}
+
+
+void GameScene::coinDoubleEffect()
+{
+	if(g_checkCoinDouble == true)
+	{
+		if( (g_checktime - g_coinItemLoadTime) >= 3.3)
+		{
+			g_checkCoinDouble = false;
+			return;
+		}
+	}
+}
+
+void GameScene::effectAnimation(CCPoint item_P)
+{
+
+	CCSprite* eff = CCSprite::create("Eff_B0.png",CCRect(0,0,210,210));
+	eff->setAnchorPoint(ccp(0,0));
+	eff->setPosition(item_P);
+	this->addChild(eff,3);
+
+	CCTexture2D* texture =CCTextureCache::sharedTextureCache()->addImage("Eff_B0.png");
+	CCSpriteFrame *frame0 = CCSpriteFrame::createWithTexture(texture, CCRectMake(0,0,210,210));
+	CCSpriteFrame *frame1 = CCSpriteFrame::createWithTexture(texture, CCRectMake(210,0,210,210));
+	CCSpriteFrame *frame2 = CCSpriteFrame::createWithTexture(texture, CCRectMake(210*2,0,210,210));
+
+	CCArray* animFrames0 = CCArray::createWithCapacity(3);
+	animFrames0->addObject(frame0);
+	animFrames0->addObject(frame1);
+
+	CCAnimation * animation0 = CCAnimation::createWithSpriteFrames(animFrames0, 0.1f);
+	CCAnimate *animate0 = CCAnimate::create(animation0);
+	CCActionInterval* seq0 = CCSequence::create(animate0,CCCallFuncN::create(this,callfuncN_selector(GameScene::callBackRemoveEffect)),NULL);
+
+	eff->runAction(seq0);
 }
